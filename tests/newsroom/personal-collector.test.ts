@@ -1,11 +1,31 @@
 import { execFileSync } from "node:child_process";
 import { expect, it } from "vitest";
-it("collects only active dated conversational evidence, including sessions begun earlier, without changing databases", () => {
-  const output = execFileSync(
-    "python3",
-    [
-      "-c",
-      `
+
+/**
+ * My Hermes Daily reads local Hermes databases through a Python collector, so
+ * this test needs Python — and, on Windows, the `tzdata` package that zoneinfo
+ * has no built-in source for. Skip rather than fail where that is missing: the
+ * rest of Newsroom is Node-only and must still be verifiable.
+ */
+const python = (() => {
+  try {
+    execFileSync("python3", ["-c", "import zoneinfo; zoneinfo.ZoneInfo('US/Pacific')"], {
+      stdio: "ignore",
+    });
+    return true;
+  } catch {
+    return false;
+  }
+})();
+
+it.skipIf(!python)(
+  "collects only active dated conversational evidence, including sessions begun earlier, without changing databases",
+  () => {
+    const output = execFileSync(
+      "python3",
+      [
+        "-c",
+        `
 import importlib.util, sqlite3, tempfile, pathlib, datetime, hashlib, sys
 sys.dont_write_bytecode=True
 spec=importlib.util.spec_from_file_location('collector','scripts/collect-hermes-work.py')
@@ -35,8 +55,9 @@ with tempfile.TemporaryDirectory() as tmp:
  assert not m.collect(root,'2026-09-20','UTC')['records']
  print('ok')
 `,
-    ],
-    { encoding: "utf8" },
-  );
-  expect(output.trim()).toBe("ok");
-});
+      ],
+      { encoding: "utf8" },
+    );
+    expect(output.trim()).toBe("ok");
+  },
+);

@@ -1,0 +1,5 @@
+# Keep the working tree LF on every platform. Without this, Windows checks out
+# CRLF and `prettier --check` fails on a clean clone.
+* text=auto eol=lf
+*.png binary
+*.cmd text eol=crlf

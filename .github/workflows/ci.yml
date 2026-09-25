@@ -1,0 +1,64 @@
+name: CI
+
+# The README says this works on Linux, macOS and Windows. This is what makes
+# that a checked claim rather than an intention: the same clone, install, build
+# and install-script run on all three, on every push.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  verify:
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Formatting, lint, types, tests, build.
+      - run: npm run verify
+
+      # The installer touches the filesystem differently on each platform, so a
+      # green test suite is not enough: run it for real against a scratch Hermes
+      # home and check the plugin actually lands where Hermes would scan for it.
+      - name: Install script — dry run
+        run: node scripts/install.mjs --dry-run --autostart
+
+      - name: Install script — plugin into a scratch Hermes home
+        shell: bash
+        run: |
+          set -euo pipefail
+          home="$RUNNER_TEMP/hermes-home"
+          mkdir -p "$home"
+          node scripts/install.mjs --plugin-only --hermes-home "$home"
+          test -f "$home/desktop-plugins/hermes-newsroom/plugin.js"
+          # The marker would make Hermes load the plugin disabled and let it
+          # delete the folder. It must never be written.
+          test ! -e "$home/desktop-plugins/hermes-newsroom/.hermes-package.json"
+
+      - name: Server answers on its own port
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm start &
+          for _ in $(seq 1 60); do
+            if curl --fail --silent http://127.0.0.1:3520/api/newsroom > /dev/null; then
+              echo "Newsroom answered on 3520"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Newsroom never answered on 3520" >&2
+          exit 1

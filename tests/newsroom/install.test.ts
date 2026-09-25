@@ -34,17 +34,29 @@ describe("install options", () => {
 describe("hermes home", () => {
   it("follows HERMES_HOME, because Hermes sets it per profile", () => {
     expect(
-      resolveHermesHome({ env: { HERMES_HOME: "/home/me/.hermes/profiles/ceo" }, home: "/home/me" }),
+      resolveHermesHome({
+        env: { HERMES_HOME: "/home/me/.hermes/profiles/ceo" },
+        home: "/home/me",
+        platform: "linux",
+      }),
     ).toBe("/home/me/.hermes/profiles/ceo");
   });
 
   it("falls back to ~/.hermes, and treats a blank value as unset", () => {
-    expect(resolveHermesHome({ env: {}, home: "/home/me" })).toBe("/home/me/.hermes");
-    expect(resolveHermesHome({ env: { HERMES_HOME: "  " }, home: "/home/me" })).toBe("/home/me/.hermes");
+    expect(resolveHermesHome({ env: {}, home: "/home/me", platform: "linux" })).toBe("/home/me/.hermes");
+    expect(resolveHermesHome({ env: { HERMES_HOME: "  " }, home: "/home/me", platform: "linux" })).toBe(
+      "/home/me/.hermes",
+    );
+  });
+
+  it("uses the separators of the platform it is describing, not of the host", () => {
+    expect(pluginTarget("C:\\Users\\me\\.hermes", "win32")).toBe(
+      "C:\\Users\\me\\.hermes\\desktop-plugins\\hermes-newsroom\\plugin.js",
+    );
   });
 
   it("puts the plugin in the folder Hermes scans, named after the plugin", () => {
-    expect(pluginTarget("/home/me/.hermes")).toBe(
+    expect(pluginTarget("/home/me/.hermes", "linux")).toBe(
       "/home/me/.hermes/desktop-plugins/hermes-newsroom/plugin.js",
     );
   });
