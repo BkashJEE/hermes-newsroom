@@ -33,8 +33,9 @@ export function parsePort(value: string): number;
 export function resolveHermesHome(context?: {
   env?: Record<string, string | undefined>;
   home?: string;
+  platform?: string;
 }): string;
-export function pluginTarget(hermesHome: string): string;
+export function pluginTarget(hermesHome: string, platform?: string): string;
 export function autostartUnit(context: {
   platform: string;
   repoRoot: string;
