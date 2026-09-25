@@ -9,7 +9,6 @@ import "@fontsource/jetbrains-mono/400.css";
 import "@fontsource/jetbrains-mono/500.css";
 import "./globals.css";
 import { APP } from "@/config/app";
-import { TopTabs } from "@/components/shell/top-tabs";
 
 export const metadata: Metadata = {
   title: { default: APP.name, template: `%s · ${APP.shortName}` },
@@ -25,7 +24,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <a className="skip-link" href="#main">
           Skip to content
         </a>
-        <TopTabs />
         {children}
       </body>
     </html>

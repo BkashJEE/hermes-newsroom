@@ -21,10 +21,7 @@ It reports. It does not draft posts, queue work, or publish anything.
 | **Trend Radar**          | Topic coverage across connected sources, with momentum where it is measured.      |
 | **Archive**              | Saved and dismissed stories, searchable.                                          |
 
-Newsroom runs inside a small [Omarchy](https://omarchy.org) desktop shell, so the
-repository also contains a few example tabs around it (X Studio, Agents Lab,
-Social Media, Messages, Hermes OS, Git, Build). Those are placeholders that
-mirror desktop workspaces; Newsroom is the working product.
+Opening the app goes straight to the Newsroom front page.
 
 ## Hermes Newsroom
 
