@@ -49,9 +49,19 @@ Node.js 22 or newer. Linux, macOS and Windows.
 ### Let your Hermes agent do it
 
 Newsroom ships an install skill, so the agent you already talk to can set it up
-and know what it is doing. Point it at this repository and say:
+and know what it is doing. Give it the skill once:
 
-> Install Hermes Newsroom from github.com/BkashJEE/hermes-newsroom
+```sh
+hermes skills install https://raw.githubusercontent.com/BkashJEE/hermes-newsroom/main/skills/install-hermes-newsroom/SKILL.md
+```
+
+Then say:
+
+> Install Hermes Newsroom
+
+Without the skill it still works — point the agent at this repository and ask for
+it — but the skill is what makes the agent already know the steps, the rails and
+the verification rather than reading them off a page.
 
 It will check your Node version, ask where you keep projects, clone and build,
 install the desktop plugin into your Hermes home, and offer to start Newsroom at
