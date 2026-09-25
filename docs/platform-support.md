@@ -14,7 +14,8 @@ patches are welcome.
 
 The application itself makes no POSIX-only assumptions: paths are built with
 `node:path` and `os.homedir()`, and there are no hardcoded `/home/...` strings in
-`src/`. These should run anywhere Node runs:
+`src/`. A three-OS CI matrix runs the whole verification on Linux, macOS and
+Windows, so this is checked rather than asserted. These run anywhere Node runs:
 
 ```sh
 npm install
@@ -31,6 +32,20 @@ State goes where each platform expects it, resolved by
 | Linux    | `$XDG_STATE_HOME` or `~/.local/state/omarchy-command-center` |
 | macOS    | `~/Library/Application Support/omarchy-command-center`       |
 | Windows  | `%LOCALAPPDATA%\omarchy-command-center`                      |
+
+## The one dependency that is not Node
+
+**My Hermes Daily**, the personal work newspaper, reads local Hermes databases
+through `scripts/collect-hermes-work.py`. That section — and only that section —
+needs Python 3 on `PATH`. On Windows it also needs the timezone database, which
+Python does not bundle there:
+
+```sh
+pip install tzdata
+```
+
+Without Python, every other section works and My Hermes Daily reports that it
+cannot collect. Nothing else in Newsroom shells out.
 
 Linux keeps its original path, so existing installs do not move. A relative
 `XDG_STATE_HOME` is ignored rather than guessed at.

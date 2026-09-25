@@ -44,7 +44,11 @@ Opening the app goes straight to the Newsroom front page.
 
 ## Install
 
-Node.js 22 or newer. Linux, macOS and Windows.
+Node.js 22 or newer. Linux, macOS and Windows — checked by CI on all three.
+
+One section, **My Hermes Daily**, also needs Python 3 on `PATH` (and `pip install
+tzdata` on Windows). Everything else is Node-only. See
+[docs/platform-support.md](docs/platform-support.md).
 
 ### Let your Hermes agent do it
 

@@ -89,14 +89,19 @@ export function parsePort(value) {
 
 // ------------------------------------------------------------- hermes layout
 
+/** The path rules of the platform being described, not of the host running this. */
+function rules(platform = process.platform) {
+  return platform === "win32" ? path.win32 : path.posix;
+}
+
 /**
  * Where Hermes keeps its home. HERMES_HOME wins because Hermes itself sets it
  * per profile; otherwise every platform uses `~/.hermes`.
  */
-export function resolveHermesHome({ env = {}, home = homedir() } = {}) {
+export function resolveHermesHome({ env = {}, home = homedir(), platform = process.platform } = {}) {
   const configured = env.HERMES_HOME;
   if (configured && configured.trim()) return configured.trim();
-  return path.join(home, ".hermes");
+  return rules(platform).join(home, ".hermes");
 }
 
 /**
@@ -105,8 +110,8 @@ export function resolveHermesHome({ env = {}, home = homedir() } = {}) {
  * Hermes the folder is a copy of an installed agent package, which makes the
  * plugin load disabled and lets Hermes delete the folder when that package is gone.
  */
-export function pluginTarget(hermesHome) {
-  return path.join(hermesHome, "desktop-plugins", PLUGIN_NAME, "plugin.js");
+export function pluginTarget(hermesHome, platform = process.platform) {
+  return rules(platform).join(hermesHome, "desktop-plugins", PLUGIN_NAME, "plugin.js");
 }
 
 // ----------------------------------------------------------------- autostart
@@ -120,10 +125,11 @@ function quoteUnix(value) {
  * Returned rather than written, so `--dry-run` can show it and a test can read it.
  */
 export function autostartUnit({ platform, repoRoot, nodePath, port, home = homedir() }) {
-  const next = path.join(repoRoot, "node_modules", "next", "dist", "bin", "next");
+  const p = rules(platform);
+  const next = p.join(repoRoot, "node_modules", "next", "dist", "bin", "next");
   const args = ["start", "--hostname", "127.0.0.1", "--port", String(port)];
   if (platform === "win32") {
-    const startup = path.win32.join(
+    const startup = p.join(
       home,
       "AppData",
       "Roaming",
@@ -143,7 +149,7 @@ export function autostartUnit({ platform, repoRoot, nodePath, port, home = homed
     };
   }
   if (platform === "darwin") {
-    const plist = path.join(home, "Library", "LaunchAgents", "com.hermes.newsroom.plist");
+    const plist = p.join(home, "Library", "LaunchAgents", "com.hermes.newsroom.plist");
     const argv = [nodePath, next, ...args]
       .map((value) => `    <string>${value.replace(/&/g, "&amp;").replace(/</g, "&lt;")}</string>`)
       .join("\n");
@@ -168,7 +174,7 @@ ${argv}
       note: "launchd starts it at login and restarts it if it stops.",
     };
   }
-  const unit = path.join(home, ".config", "systemd", "user", "hermes-newsroom.service");
+  const unit = p.join(home, ".config", "systemd", "user", "hermes-newsroom.service");
   const exec = [nodePath, next, ...args].map(quoteUnix).join(" ");
   return {
     path: unit,
