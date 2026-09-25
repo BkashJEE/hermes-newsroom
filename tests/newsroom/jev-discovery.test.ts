@@ -17,13 +17,21 @@ vi.mock("@/newsroom/browser-x/server", () => ({
   readXState: async () => ({ posts: [], lastCollectedAt: "2026-09-01T00:00:00Z" }),
 }));
 import { hermesHuntProviders } from "@/newsroom/providers/hermes-hunt";
+/**
+ * One timestamp for every fixture. Calling `new Date()` per story made two
+ * stories built in the same expression land in the same millisecond on a fast
+ * machine and different ones on a slow machine, which decided a tie the
+ * comparator resolves by publishedAt before id — so the expected order held on
+ * Linux and not on a Windows runner. The clock is not what these tests are about.
+ */
+const PUBLISHED_AT = new Date().toISOString();
 function story(id: string, relevanceScore: number, source = "github"): Story {
   return {
     id,
     title: `Synthetic ${id}`,
     summary: "Synthetic excerpt",
     source,
-    publishedAt: new Date().toISOString(),
+    publishedAt: PUBLISHED_AT,
     sourceUrl: `https://example.com/${id}`,
     relevanceScore,
   } as Story;
