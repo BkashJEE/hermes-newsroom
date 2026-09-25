@@ -5,8 +5,15 @@ description: Operate and maintain the installed Hermes Newsroom in Omarchy works
 
 # Hermes Newsroom
 
-Newsroom is the local app at http://127.0.0.1:3520/newsroom on workspace 8.
+Newsroom is the local app at http://127.0.0.1:3520/newsroom.
 It is not the Hermes agent repository or the desktop plugin repository.
+To install it in the first place, use `install-hermes-newsroom` instead.
+
+The `hermes-newsroom` command and the installation record below belong to a
+Linux install done with `npm run deploy:local`. **Check that the command exists
+before relying on it.** Without it, read and change Newsroom through its HTTP API
+and its repository; everything below about operating a dedicated window does not
+apply.
 
 Start with `hermes-newsroom status`. If PATH lacks the command, use
 `$HOME/.local/bin/hermes-newsroom status`. This reports the current source

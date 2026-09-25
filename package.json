@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "next dev --hostname 127.0.0.1 --port 3510",
     "build": "next build",
-    "start": "next start --hostname 127.0.0.1 --port 3510",
+    "start": "next start --hostname 127.0.0.1 --port 3520",
+    "setup": "node scripts/install.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint .",

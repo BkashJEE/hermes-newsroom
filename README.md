@@ -42,20 +42,47 @@ sources on.
 
 Opening the app goes straight to the Newsroom front page.
 
-## Quick start
+## Install
 
-Node.js 22 or newer. Works on Linux, macOS and Windows.
+Node.js 22 or newer. Linux, macOS and Windows.
+
+### Let your Hermes agent do it
+
+Newsroom ships an install skill, so the agent you already talk to can set it up
+and know what it is doing. Point it at this repository and say:
+
+> Install Hermes Newsroom from github.com/BkashJEE/hermes-newsroom
+
+It will check your Node version, ask where you keep projects, clone and build,
+install the desktop plugin into your Hermes home, and offer to start Newsroom at
+login. It shows you the exact list of files first. It never asks for a key,
+because there is nothing here to authenticate against.
+
+### Or three commands
 
 ```sh
 git clone https://github.com/BkashJEE/hermes-newsroom
 cd hermes-newsroom
-npm ci
-npm run build
-npm start                 # http://127.0.0.1:3520/newsroom
+npm ci && npm run build && npm run setup
 ```
 
-That runs immediately, with no configuration and no keys, on clearly labelled
-demo data. To read the real thing, turn on live sources:
+`npm run setup` is the same installer the skill uses. Add `--dry-run` to see
+every step before it happens, or `--autostart` to have it running whenever you
+sign in:
+
+```sh
+node scripts/install.mjs --dry-run
+node scripts/install.mjs --autostart      # systemd, launchd or Startup, per platform
+```
+
+Then **restart the Hermes Desktop app** — disk plugins are scanned at startup,
+not on a window reload — and Newsroom appears in the sidebar. In a browser it is
+at `http://127.0.0.1:3520/newsroom`.
+
+### What you get on first run
+
+Newsroom starts with no configuration and no keys, on clearly labelled demo data.
+To read the real thing, turn on live sources:
 
 ```sh
 cp config/newsroom.example.json config/newsroom.local.json
@@ -70,8 +97,9 @@ is separate, off by default, and documented in [SECURITY.md](SECURITY.md).
 
 `config/newsroom.local.json` is git-ignored, so your watchlists stay yours.
 
-To open it inside Hermes Desktop rather than a browser, add the one-file plugin:
+The desktop plugin is its own one-file repository:
 [hermes-newsroom-plugin](https://github.com/BkashJEE/hermes-newsroom-plugin).
+The installer fetches it for you; you never have to visit it.
 
 ## Hermes Newsroom
 
