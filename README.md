@@ -23,6 +23,37 @@ It reports. It does not draft posts, queue work, or publish anything.
 
 Opening the app goes straight to the Newsroom front page.
 
+## Quick start
+
+Node.js 22 or newer. Works on Linux, macOS and Windows.
+
+```sh
+git clone https://github.com/BkashJEE/hermes-newsroom
+cd hermes-newsroom
+npm ci
+npm run build
+npm start                 # http://127.0.0.1:3520/newsroom
+```
+
+That runs immediately, with no configuration and no keys, on clearly labelled
+demo data. To read the real thing, turn on live sources:
+
+```sh
+cp config/newsroom.example.json config/newsroom.local.json
+# then set  "liveSources": true  in that file and restart
+```
+
+GitHub and Hacker News need nothing else. Bluesky and Reddit are queried
+anonymously and can be refused by those services depending on where you run it;
+if that happens the feed says so rather than hiding it, and you can switch them
+off with `"socialSources": { "bluesky": false, "reddit": false }`. X collection
+is separate, off by default, and documented in [SECURITY.md](SECURITY.md).
+
+`config/newsroom.local.json` is git-ignored, so your watchlists stay yours.
+
+To open it inside Hermes Desktop rather than a browser, add the one-file plugin:
+[hermes-newsroom-plugin](https://github.com/BkashJEE/hermes-newsroom-plugin).
+
 ## Hermes Newsroom
 
 Ranked, evidence-scored AI intelligence, with a clear next action for each story.
