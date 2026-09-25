@@ -4,7 +4,8 @@ import { homedir } from "node:os";
 import { join } from "node:path";
 import type { HuntRecord, HuntCandidate, RunSnapshot } from "./model";
 import { mergeHunt, applyHuntRun } from "./inbox-model";
-const directory = join(homedir(), ".local/state/omarchy-command-center/jev");
+import { stateDir } from "../config/state-path";
+const directory = stateDir("jev");
 const file = join(directory, "hunt-inbox.json");
 export async function readHuntInbox(): Promise<HuntRecord[]> {
   try {

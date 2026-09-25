@@ -13,8 +13,9 @@ import {
   type Decision,
   type RunSnapshot,
 } from "./model";
+import { stateDir } from "../config/state-path";
 const exec = promisify(execFile);
-const directory = join(homedir(), ".local/state/omarchy-command-center/jev");
+const directory = stateDir("jev");
 const helper = join(homedir(), ".openclaw/workspace/hermes-jev/evaluate.mjs");
 export async function helperReady() {
   try {

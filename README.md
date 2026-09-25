@@ -7,21 +7,24 @@ front page, a live wire, daily and weekly editions, and a searchable archive.
 
 It reports. It does not draft posts, queue work, or publish anything.
 
-Newsroom ships inside a small [Omarchy](https://omarchy.org) desktop shell, so
-the repository also contains the surrounding tabs. Each tab is a page with one
-job, and the tab strip mirrors the workspaces on an Omarchy bar.
+## The sections
 
+| Section                  | What it shows                                                                     |
+| ------------------------ | --------------------------------------------------------------------------------- |
+| **Front Page**           | The most important intelligence right now, filled to a full page.                 |
+| **Hermes Agent Updates** | What changed, is new, is gone, is better and is bad, from source statements only. |
+| **Live Wire**            | Every incoming signal in order, as it lands.                                      |
+| **Hermes Daily**         | Today's edition as flashcards, or a four-page newspaper to read and print.        |
+| **My Hermes Daily**      | A personal newspaper built from your own Hermes work records.                     |
+| **Weekly Chronicle**     | The week around Hermes Agent: releases, merges, and what the community shipped.   |
+| **Built With Hermes**    | New projects, skills and tools people are building on Hermes.                     |
+| **Trend Radar**          | Topic coverage across connected sources, with momentum where it is measured.      |
+| **Archive**              | Saved and dismissed stories, searchable.                                          |
 
-| Tab                 | Status                                                                                   |
-| ------------------- | ---------------------------------------------------------------------------------------- |
-| X-Studio            | Mirrors desktop workspace 6. Lists its tools; they run from the Omarchy bar today.       |
-| Agents Lab          | Mirrors desktop workspace 1. Same as above.                                              |
-| Social Media        | Mirrors desktop workspace 2. Same as above.                                              |
-| **Hermes Newsroom** | **Eight working sections, live public sources, Hermes generation and desktop controls.** |
-| Messages            | Mirrors desktop workspace 7.                                                             |
-| Hermes OS           | Mirrors desktop workspace 3.                                                             |
-| Git                 | Mirrors desktop workspace 4.                                                             |
-| Build               | Mirrors desktop workspace 5.                                                             |
+Newsroom runs inside a small [Omarchy](https://omarchy.org) desktop shell, so the
+repository also contains a few example tabs around it (X Studio, Agents Lab,
+Social Media, Messages, Hermes OS, Git, Build). Those are placeholders that
+mirror desktop workspaces; Newsroom is the working product.
 
 ## Hermes Newsroom
 

@@ -5,6 +5,7 @@ import { join } from "node:path";
 import { randomUUID } from "node:crypto";
 import { setTimeout as delay } from "node:timers/promises";
 import { parsePosts, type XState } from "./model";
+import { stateDir } from "../config/state-path";
 export function createXStore(directory: string) {
   const file = join(directory, "state.json");
   async function readXState(): Promise<XState> {
@@ -91,9 +92,7 @@ export function createXStore(directory: string) {
   }
   return { readXState, updateX };
 }
-export const { readXState, updateX } = createXStore(
-  join(homedir(), ".local/state/omarchy-command-center/browser-x"),
-);
+export const { readXState, updateX } = createXStore(stateDir("browser-x"));
 export function xStatus(state: XState) {
   return { job: state.job, lastCollectedAt: state.lastCollectedAt, count: state.posts.length };
 }

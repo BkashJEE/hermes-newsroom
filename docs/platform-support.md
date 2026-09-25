@@ -4,11 +4,11 @@ Honest status, not aspiration. The owner develops on Linux (Omarchy/Hyprland) an
 has no Mac, so anything below marked untested is genuinely untested — reports and
 patches are welcome.
 
-| Platform                      | Status                           | Notes                                                                                                     |
-| ----------------------------- | -------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| Linux (Omarchy/Arch, Wayland) | **Tested daily**                 | Full path: dev, `npm run verify`, `scripts/deploy-local.sh`, systemd user service, Hermes Desktop plugin. |
-| Windows 10/11                 | **Expected to work, unverified** | The Next.js app only. See below.                                                                          |
-| macOS                         | **Untested**                     | No Mac available to the owner. Open for review; please open an issue with results.                        |
+| Platform                      | Status                            | Notes                                                                                                     |
+| ----------------------------- | --------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| Linux (Omarchy/Arch, Wayland) | **Tested daily**                  | Full path: dev, `npm run verify`, `scripts/deploy-local.sh`, systemd user service, Hermes Desktop plugin. |
+| Windows 10/11                 | **Paths handled, app unverified** | The Next.js app only; state goes to `%LOCALAPPDATA%`. See below.                                          |
+| macOS                         | **Paths handled, app untested**   | State goes to Application Support. No Mac available to the owner; open for review.                        |
 
 ## What is portable
 
@@ -23,10 +23,17 @@ npm run verify     # prettier, eslint, tsc, vitest, build
 npm run build && npm start
 ```
 
-State is written under `~/.local/state/omarchy-command-center/…`. On Windows that
-resolves inside the user profile (`%USERPROFILE%\.local\state\…`). It works, but
-it is not where a Windows user would expect application state; moving it behind a
-platform-aware helper is a reasonable first contribution.
+State goes where each platform expects it, resolved by
+`src/newsroom/config/state-path.ts`:
+
+| Platform | State directory                                              |
+| -------- | ------------------------------------------------------------ |
+| Linux    | `$XDG_STATE_HOME` or `~/.local/state/omarchy-command-center` |
+| macOS    | `~/Library/Application Support/omarchy-command-center`       |
+| Windows  | `%LOCALAPPDATA%\omarchy-command-center`                      |
+
+Linux keeps its original path, so existing installs do not move. A relative
+`XDG_STATE_HOME` is ignored rather than guessed at.
 
 ## What is Linux-only
 

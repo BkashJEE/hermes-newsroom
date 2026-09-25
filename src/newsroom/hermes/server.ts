@@ -2,6 +2,7 @@ import "server-only";
 import { readFile } from "node:fs/promises";
 import { homedir } from "node:os";
 import { join } from "node:path";
+import { stateDir } from "../config/state-path";
 
 export async function resolveGateway(
   env: Record<string, string | undefined>,
@@ -33,9 +34,7 @@ export async function gateway() {
 }
 export async function installation() {
   try {
-    return JSON.parse(
-      await readFile(join(homedir(), ".local/state/omarchy-command-center/installation.json"), "utf8"),
-    );
+    return JSON.parse(await readFile(stateDir("installation.json"), "utf8"));
   } catch {
     return { source: process.cwd(), url: "http://127.0.0.1:3520/newsroom", workspace: 8 };
   }

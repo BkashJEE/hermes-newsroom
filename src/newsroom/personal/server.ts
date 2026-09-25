@@ -9,9 +9,10 @@ import { loadNewsroomConfig } from "../config/load-config";
 import { runHermes } from "../hermes/server";
 import type { PersonalData, PersonalEdition, WorkSnapshot } from "./types";
 import { validDate, validatePaper } from "./validate";
+import { stateDir } from "../config/state-path";
 
 const exec = promisify(execFile);
-const directory = join(homedir(), ".local/state/omarchy-command-center/personal-daily");
+const directory = stateDir("personal-daily");
 const editionId = /^\d{4}-\d{2}-\d{2}_[a-f0-9-]{36}$/;
 export async function personalData(date?: string, selected?: string): Promise<PersonalData> {
   const config = await loadNewsroomConfig();
