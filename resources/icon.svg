@@ -1,11 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
   <title>Hermes Newsroom</title>
-  <desc>An edition: one lead story above the rest, ranked.</desc>
-  <rect width="1024" height="1024" rx="232" fill="#11151a"/>
-  <!-- The lead. Accent is the only coloured surface, as on the page itself. -->
-  <rect x="222" y="256" width="580" height="94" rx="18" fill="#2f81f7"/>
-  <!-- What follows it, shorter each time: the ranking is the product. -->
-  <rect x="222" y="452" width="580" height="60" rx="16" fill="#8b949e"/>
-  <rect x="222" y="576" width="444" height="60" rx="16" fill="#8b949e"/>
-  <rect x="222" y="700" width="290" height="60" rx="16" fill="#4d5560"/>
+  <desc>A monogram H inside a hexagon.</desc>
+  <rect width="1024" height="1024" rx="232" fill="#0a0b0c"/>
+  <path d="M512 107 874.7 309.3v405.4L512 917 149.3 714.7V309.3Z" fill="none" stroke="#80868b" stroke-width="53"/>
+  <path d="M362.7 320v384M661.3 320v384M362.7 512h298.6" stroke="#76b900" stroke-width="96" stroke-linecap="square"/>
 </svg>

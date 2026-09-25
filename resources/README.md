@@ -11,9 +11,5 @@ and re-render rather than editing a PNG.
 | `icon-64.png`        | small UI                                   |
 | `social-preview.png` | 1280x640, GitHub Settings > Social preview |
 
-The mark is a lead story above the rest, which is what the product does: rank an
-edition and put the most important thing first. The accent is the only coloured
-surface, as on the page itself.
-
-It deliberately avoids a Hermes monogram. This project reports on Hermes Agent
-and is not affiliated with Nous Research, so its mark should not borrow theirs.
+Product screenshots live in `docs/images/` and are captured from the bundled
+demo data, never from a real feed, so they carry no one's watchlists or records.

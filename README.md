@@ -9,6 +9,23 @@ front page, a live wire, daily and weekly editions, and a searchable archive.
 
 It reports. It does not draft posts, queue work, or publish anything.
 
+## What you get
+
+<img src="docs/images/hermes-daily.png" alt="Hermes Daily: a nine-story edition with a printable newspaper view" width="820">
+
+A daily edition you can read or print, built from what the sources actually published.
+
+<img src="docs/images/agent-updates.png" alt="Hermes Agent Updates: what changed, is new, is gone, is better, is bad" width="820">
+
+Every release and merged change, sorted into what changed, what is new, what is gone, what is better and what is bad — quoted from the notes, never written by a model.
+
+<img src="docs/images/built-with-hermes.png" alt="Built With Hermes: community projects ranked by GitHub popularity" width="820">
+
+What the community is shipping on Hermes, so you can find a project again next week.
+
+Screenshots use the bundled demo data, which is what you see before turning live
+sources on.
+
 ## The sections
 
 | Section                  | What it shows                                                                     |
