@@ -1,5 +1,7 @@
 # Hermes Newsroom
 
+<img src="resources/social-preview.png" alt="Hermes Newsroom" width="820">
+
 A local, privacy-first news-intelligence command center for
 [Hermes Agent](https://nousresearch.com). It gathers public signals about Hermes
 and its ecosystem, keeps the ones that report an event, and presents them as a
