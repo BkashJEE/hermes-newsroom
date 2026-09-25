@@ -1,0 +1,445 @@
+.desk {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-top: 2px solid var(--green);
+  padding: 20px;
+  background: var(--panel);
+  border-radius: 5px;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: start;
+}
+.header h3 {
+  font: 700 30px var(--font-display);
+  text-transform: uppercase;
+  margin: 0;
+}
+.header p {
+  color: var(--text-2);
+  margin: 6px 0 14px;
+}
+.header .eyebrow {
+  font: 500 12px var(--font-mono);
+  color: var(--green);
+  text-transform: uppercase;
+}
+.badge {
+  border: 1px solid var(--green);
+  color: var(--green);
+  padding: 6px 9px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: end;
+}
+.controls button,
+.controls select,
+.override select {
+  border: 1px solid var(--line-strong);
+  background: var(--panel-2);
+  color: var(--text);
+  border-radius: 4px;
+  padding: 9px 12px;
+  font: inherit;
+}
+.controls button {
+  cursor: pointer;
+}
+.controls button:first-child {
+  background: var(--green);
+  color: #101500;
+  font-weight: 600;
+}
+.controls button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.controls label,
+.override {
+  display: grid;
+  gap: 5px;
+  font-size: 13px;
+}
+.notice,
+.input {
+  font-size: 13px;
+  color: var(--text-2);
+  line-height: 1.5;
+  margin: 12px 0;
+}
+.consent {
+  display: flex;
+  align-items: start;
+  gap: 8px;
+  font-size: 14px;
+}
+.consent input {
+  margin-top: 4px;
+}
+.runline {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+  font-size: 14px;
+}
+.runline strong {
+  color: var(--green);
+}
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+  align-items: start;
+}
+.column {
+  min-width: 0;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 12px;
+}
+.column h4 {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 0 12px;
+  font: 600 24px var(--font-display);
+}
+.column h4 span {
+  color: var(--text-3);
+}
+.card {
+  margin-top: 10px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--text-3);
+  background: var(--panel);
+  overflow-wrap: anywhere;
+  animation: arrive 0.2s ease-out;
+}
+.card[data-status="processing"] {
+  border-left-color: var(--green);
+}
+.card[data-status="classified"] {
+  border-left-color: var(--cyan);
+}
+.card[data-status="review"],
+.card[data-status="failed"] {
+  border-left-color: var(--amber);
+}
+.card h5 {
+  font-size: 16px;
+  margin: 8px 0 12px;
+  line-height: 1.4;
+}
+.card p,
+.card details {
+  font-size: 13px;
+  line-height: 1.5;
+}
+.itemStatus {
+  text-transform: uppercase;
+  color: var(--text-2);
+  margin: 0;
+  font: 500 12px var(--font-mono);
+}
+.choice {
+  display: block;
+  color: var(--green);
+  margin: 10px 0;
+}
+.card summary,
+.input summary,
+.timeline summary {
+  cursor: pointer;
+  color: var(--text-2);
+}
+.card a {
+  color: var(--green);
+}
+.override {
+  margin-top: 12px;
+}
+.override select {
+  max-width: 100%;
+  width: 100%;
+}
+.probability {
+  display: grid;
+  grid-template-columns: 80px minmax(40px, 1fr) 45px;
+  gap: 6px;
+  align-items: center;
+}
+.probability meter {
+  width: 100%;
+}
+.pulse {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: pulse 1s infinite alternate;
+}
+.timeline {
+  margin-top: 18px;
+}
+.timeline ol {
+  max-height: 180px;
+  overflow: auto;
+  padding-left: 24px;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.timeline time {
+  color: var(--green);
+  font: 12px var(--font-mono);
+  margin-right: 8px;
+}
+.empty {
+  color: var(--text-3);
+  font-size: 14px;
+}
+.error {
+  color: var(--amber);
+}
+.status {
+  font-size: 13px;
+  color: var(--text-2);
+}
+@keyframes pulse {
+  to {
+    opacity: 0.3;
+  }
+}
+@keyframes arrive {
+  from {
+    opacity: 0.4;
+    transform: translateY(5px);
+  }
+}
+@media (max-width: 900px) {
+  .board {
+    grid-template-columns: 1fr;
+  }
+  .header {
+    flex-wrap: wrap;
+  }
+  .desk {
+    padding: 12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pulse,
+  .card {
+    animation: none;
+  }
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-block: 16px;
+}
+.metrics p {
+  margin: 0;
+  padding: 12px;
+  border: 1px solid var(--line);
+}
+.metrics strong {
+  display: block;
+  color: var(--green);
+}
+
+.collection {
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--amber);
+  padding: 10px 14px;
+  margin-block: 12px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.collection p {
+  margin: 6px 0;
+}
+
+.discovery {
+  margin-block: 20px;
+  padding: 16px;
+  border: 1px solid var(--green);
+  background: var(--bg);
+}
+.stages,
+.sources,
+.outcomes {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  padding: 0;
+  list-style: none;
+}
+.stages li,
+.sources article,
+.outcomes p {
+  border: 1px solid var(--line);
+  padding: 12px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.stages li {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  border-top: 3px solid var(--line);
+}
+.stages li span,
+.candidateState {
+  font: 600 11px var(--font-mono);
+  letter-spacing: 0.05em;
+}
+.stages li small {
+  color: var(--text-2);
+  font-size: 12px;
+}
+.stages li[data-state="current"],
+.stages li[data-state="complete"] {
+  border-color: var(--green);
+  background: var(--panel-2);
+}
+.stages li[data-state="failed"],
+.processResult[data-state="failed"],
+.badge[data-state="failed"] {
+  border-color: var(--amber);
+  color: var(--amber);
+}
+.processResult {
+  border: 1px solid var(--green);
+  padding: 10px 12px;
+  line-height: 1.5;
+}
+.processResult strong {
+  display: block;
+  margin-top: 4px;
+  color: var(--text);
+}
+.stages strong,
+.outcomes strong {
+  display: block;
+  color: var(--green);
+  margin-top: 5px;
+}
+.sources,
+.outcomes {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.sources p {
+  font-size: 13px;
+  color: var(--text-2);
+}
+.selection h4 {
+  margin: 18px 0 10px;
+  font: 600 19px var(--font-display);
+}
+.selectedCards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 10px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.selectedCards li {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--green);
+  background: var(--panel-2);
+  overflow-wrap: anywhere;
+}
+.selectedCards li[data-state="failed"] {
+  border-left-color: var(--amber);
+}
+.selectedCards li[data-state="cancelled"] {
+  border-left-color: var(--text-3);
+}
+.selectedCards a {
+  color: var(--text);
+  font-weight: 600;
+}
+.selectedCards small {
+  color: var(--text-2);
+}
+.candidates {
+  max-height: 300px;
+  overflow-y: auto;
+  padding-left: 28px;
+}
+.candidates li {
+  padding: 10px;
+  border-bottom: 1px solid var(--line);
+  overflow-wrap: anywhere;
+}
+.candidates li[data-selected="true"] {
+  border-left: 3px solid var(--green);
+}
+.candidates div {
+  font-size: 12px;
+  color: var(--text-2);
+}
+.candidates a {
+  color: var(--text);
+}
+.previous {
+  padding: 10px;
+  background: var(--panel-2);
+  color: var(--text);
+  border: 1px solid var(--line);
+  cursor: pointer;
+}
+@media (max-width: 700px) {
+  .stages,
+  .sources {
+    grid-template-columns: 1fr 1fr;
+  }
+  .discovery {
+    padding: 10px;
+  }
+}
+
+.inbox {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: 12px;
+  padding: 0;
+  list-style: none;
+  max-height: 650px;
+  overflow: auto;
+}
+.inbox li {
+  padding: 14px;
+  border: 1px solid var(--line);
+  background: var(--panel-2);
+}
+.inbox a {
+  color: var(--green);
+  font-weight: 600;
+}
+.inbox p {
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+.inbox small {
+  color: var(--text-2);
+}

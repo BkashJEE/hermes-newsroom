@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 120" role="img" aria-label="Stylized policy document with a seal">
+  <rect width="160" height="120" fill="#141a2b"/>
+  <rect x="44" y="14" width="72" height="92" rx="3" fill="#e9edf2"/>
+  <g stroke="#9aa6b8" stroke-width="3" stroke-linecap="round">
+    <path d="M56 32h48M56 42h48M56 52h36M56 62h44M56 72h30"/>
+  </g>
+  <circle cx="100" cy="88" r="12" fill="#f2a93b"/>
+  <circle cx="100" cy="88" r="7" fill="none" stroke="#1d1200" stroke-width="2"/>
+</svg>

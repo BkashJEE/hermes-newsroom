@@ -1,0 +1,15 @@
+[Unit]
+Description=Newsroom public X search collection (dedicated browser profile)
+After=network.target omarchy-command-center.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=@DEPLOY@
+Environment=NEWSROOM_X_NODE=@NODE@
+ExecStart=/bin/bash @DEPLOY@/scripts/newsroom-x-browser.sh run
+UMask=0077
+NoNewPrivileges=yes
+TimeoutStartSec=180
+TimeoutStopSec=15
+KillMode=control-group
+SuccessExitStatus=75

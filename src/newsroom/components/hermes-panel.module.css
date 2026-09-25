@@ -1,0 +1,55 @@
+.panel {
+  margin: 0 0 16px;
+  border: 1px solid #343b32;
+  border-radius: 4px;
+  background: #131714;
+  padding: 12px 16px;
+  color: #d7ddd5;
+}
+.panel summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: #a3d527;
+}
+.panel summary span {
+  margin-left: 16px;
+  font-size: 12px;
+  color: #9ba493;
+  font-weight: 400;
+}
+.panel p {
+  font-size: 14px;
+  margin: 12px 0;
+}
+.panel form {
+  display: grid;
+  gap: 8px;
+}
+.panel textarea {
+  width: 100%;
+  resize: vertical;
+  color: inherit;
+  background: #0d110d;
+  border: 1px solid #454f42;
+  padding: 10px;
+}
+.panel button {
+  width: fit-content;
+  padding: 8px 14px;
+  border: 1px solid #657d32;
+  background: #263418;
+  color: #d4f78e;
+  cursor: pointer;
+}
+.panel button:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+.output {
+  font: inherit;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 480px;
+  overflow: auto;
+}

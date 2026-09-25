@@ -1,0 +1,30 @@
+# dependencies
+node_modules/
+
+# build output
+.next/
+out/
+coverage/
+*.tsbuildinfo
+next-env.d.ts
+
+# local verification output (screenshots, traces, logs) — never committed
+artifacts/
+*.log
+
+# secrets: only .env.example is committed
+.env
+.env.*
+!.env.example
+
+# private, user-specific configuration (watchlists, ranking rules, account ids)
+config/*.local.json
+config/local/
+
+# editor / OS
+.DS_Store
+.idea/
+.vscode/
+
+# local agent/editor tooling
+.claude/

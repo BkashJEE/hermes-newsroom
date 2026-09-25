@@ -1,0 +1,14 @@
+.list {
+  margin: 0;
+  padding-left: 1.25rem;
+  list-style: disc outside;
+  font-size: 1.05rem;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+.list li + li {
+  margin-top: 0.5rem;
+}
+.list li::marker {
+  color: var(--green);
+}

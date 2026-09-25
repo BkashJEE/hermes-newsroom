@@ -1,0 +1,51 @@
+{
+  "$comment": "Example Newsroom configuration. Copy to newsroom.local.json (git-ignored) to use your own watchlists.",
+  "watchlists": [
+    {
+      "id": "hermes-agent",
+      "label": "Hermes Agent",
+      "topics": ["Hermes Agent"]
+    },
+    {
+      "id": "nous-research",
+      "label": "Nous Research",
+      "topics": ["Nous Research"]
+    },
+    {
+      "id": "agent-frameworks",
+      "label": "Agent Frameworks",
+      "topics": ["Agent Frameworks", "AI Agents"]
+    },
+    {
+      "id": "local-models",
+      "label": "Local Models",
+      "topics": ["Local Models"]
+    },
+    {
+      "id": "reliability",
+      "label": "Reliability",
+      "topics": ["Reliability"]
+    },
+    {
+      "id": "security",
+      "label": "Security",
+      "topics": ["Security"]
+    },
+    {
+      "id": "community-builds",
+      "label": "Community Builds",
+      "topics": ["Community Builds"]
+    }
+  ],
+  "jev": {
+    "enabled": false
+  },
+  "personalDaily": {
+    "enabled": false,
+    "title": "My Hermes Daily",
+    "timezone": "UTC"
+  },
+  "xBrowser": {
+    "enabled": false
+  }
+}

@@ -1,0 +1,45 @@
+# Jev Live Desk
+
+Live Wire now includes a process board: Queued → Processing → Results & review. The server streams newline-delimited JSON snapshots as each request starts and finishes. Cards show the actual public input, configured criteria, returned category/probabilities, measured request duration and supplied token usage. Errors stop the batch; there is no automatic retry. Cancel/unmount aborts the request and helper process; an already submitted provider request can still be billed. No hidden model reasoning is displayed.
+
+## Preview and live mode
+
+“Watch demo” runs three synthetic examples with deliberate pacing. It makes no model/API call and supplies no invented probabilities, inference timings or cost. Its UI, saved record and proof download explicitly identify the demo. It is a workflow preview, not evidence of Jev performance.
+
+Live mode is disabled by default (`jev.enabled=false` in the example). Explicitly enable `jev.enabled=true` only in ignored `config/newsroom.local.json` after approval for provider usage. Existing local configuration must be preserved. The UI additionally requires acknowledgement before every page session can start paid calls. The installed helper is `~/.openclaw/workspace/hermes-jev/evaluate.mjs`, called with fixed arguments and a server-created request file. Credentials remain in the helper's server-side environment or `~/.config/hermes-jev/.env`; they are never returned to the browser. No separate AI SDK dependency is added to Newsroom.
+
+The helper uses `typesafe-ai/jev` via the [Vercel evaluation API](https://vercel.com/docs/ai-gateway/modalities/evaluation). Each selected story is evaluated separately, sequentially, with at most five stories per run, ten attempted calls per rolling hour and no automatic retry. The persistent call ledger and exclusive lock are shared by dev and production. These are call limits, not a dollar budget. The adapter does not supply cost; the interface and export say so. A result without probabilities, Other, or selected probability below 0.75 is routed to review. This threshold is an initial heuristic, not a calibrated accuracy guarantee.
+
+Except for the server-owned synthetic benchmark, only server-resolved IDs from current live Hacker News/GitHub stories or locally enabled public X captures are accepted. The provider receives title (maximum 240 characters) and summary (maximum 1,200 characters). Personal work records, drafts, arbitrary paths and client-supplied replacement text are excluded. The API checks the local host, matching Origin when present and the Newsroom client header. It exposes no tools and does not invoke the shared Hermes chat gateway. Classification is data, not authorization to change files, publish or execute commands.
+
+## Evidence and recovery
+
+The last completed/cancelled/failed run and the call ledger live under `~/.local/state/omarchy-command-center/jev/`, with private directory/file permissions. Temporary input files are removed after each helper call. Reload opens a failed run with its collection, selection and per-story evaluation statuses; it does not resume or replay provider calls. The app shows a fixed, redacted cause when the helper reports an HTTP status. Older failures retain only the generic message already saved; the original provider error cannot be recovered from them. An interrupted stream may not have a saved result. A failed save is reported in the UI. A crash can leave `active.lock`; confirm no Jev run/helper is active before manually removing that lock. Do not reset the ledger to bypass limits.
+
+“Download proof JSON” includes mode, model, public inputs, decisions, event timestamps and measured durations. Human review overrides are separate from the untouched provider results; they affect the current view/export only. Select “Keep provider result / undo” to remove an override. Download before leaving to retain overrides. Demo exports cannot substantiate real-model performance. A live export is a local run record, not independently signed provider attestation; correlate it with provider logs for a public demonstration. No screenshot or report should expose credentials or private editions.
+
+## Remaining
+
+Actual paid-provider verification requires approval; synthetic tests validate stream ordering, cancellation, failure handling, input boundaries and typed response parsing. Pause/resume, reconnecting to an active run, automatic routing into newspaper selection, production-quality accuracy benchmarks and Hermes skill commands for this endpoint are not implemented. The installed Jev helper is reused, but the Hermes Newsroom control skill has not yet been extended to start these runs.
+
+Before claiming quality or speed, test 30–50 independently labelled public/synthetic examples against current rules and report accuracy, review rate, full request latency and actual provider charges. Social virality requires connected sources and repeated engagement measurements; this classifier does not provide them.
+
+## Browser hunts and labelled test
+
+The live desk now supports a queued public X hunt followed by Jev relevance/category evaluation and a separate five-example labelled synthetic test. Timing, coverage and label agreement are measured separately. See [browser collector](browser-x-collector.md) for exact behavior and scope. Actual paid evaluation is still not claimed as verified by synthetic tests.
+
+## Visible news collection and evaluation
+
+**Fetch news + run Jev** is the combined live flow: it starts fresh GitHub/Hacker News public API requests (bypassing the five-minute source cache), shows per-source completion/failure/count and actual elapsed time, deduplicates stories and selects 1/3/5 for evaluation. Selection takes one unevaluated item per collection channel per pass, preferring new-to-inbox items then newer timestamps. This is a deterministic selection policy; Jev then supplies relevance/category decisions and Keep/Review/Drop routing. Source failure is displayed, never replaced with invented stories. A saved X sample may participate, explicitly labelled with its capture time; this button does not remote-control an X browser.
+
+**Fetch news · no Jev call** runs only collection and selection. It needs no Gateway acknowledgement and never calls the evaluator or overwrites the saved Jev run. **Test Jev** remains a five-example synthetic benchmark, not a news-fetch button. Previous successful runs and demos are collapsed until opened; a failed live run opens automatically so its collection and Jev failure remain visible.
+
+Discovery events arrive as each source finishes. Evaluator events arrive before and after each real request; there is no artificial slowing, simulated internal reasoning, or fabricated token-by-token stream. Proof JSON for a paid run includes its collection sources, candidates, selection rule and model results. Real collection output stays in local state/exports, never test fixtures or Git. Page-level filters do not constrain this explicit 30-day news hunt. The five-story/run and ten-call/hour caps still apply. A no-credit preview verifies real collection but does not establish that the paid provider works.
+
+## Targeted Hermes hunting and persistent inbox
+
+The live feed and hunt now share four public channels: official releases, recently pushed public community repositories matching `hermes-agent` in name/description/topics, merged upstream pull requests, and Hermes-specific Hacker News search. Existing public X captures remain a separate saved source. Bounded API searches replace scanning general AI top stories. The existing public [GitHub search API](https://docs.github.com/en/rest/search/search) and [Algolia HN search](https://hn.algolia.com/api) provide these searches without another crawler, plugin, paid search service or dependency.
+
+The inbox retains up to 300 candidates from the last 30 days in private local state (`jev/hunt-inbox.json`). Collection records first/last seen dates. Selection balances the collection channels, prioritizes unseen candidates, and skips excerpts with saved evaluations when title, summary and source URL are unchanged. Changed excerpts lose their old decision and become eligible again. New means new to the retained local history, not exclusive, globally unknown or trending. Repository push times mean activity, not release dates. A merged PR is not necessarily shipped. Incomplete searches and provider errors are surfaced.
+
+Real decisions are attached to matching stored excerpts with run ID, evaluation time and request latency. Demo and benchmark output cannot populate real inbox decisions. Use case is a separate category for concrete Hermes workflows. The inbox offers Keep, Review, Drop, Awaiting Jev and Use case views; it does not claim that a model confidence score measures truth or accuracy. Raw feed items remain source candidates, and newspaper selection does not automatically inherit Jev routing. Every paid hunt still needs UI acknowledgement, retains the five-story and ten-call/hour caps, and does not publish anything. Opening the feed fetches cached public sources; it never calls Jev.

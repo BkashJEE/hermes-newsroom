@@ -1,0 +1,82 @@
+/*
+ * Newsroom frame. Tuned for 2560×1440; usable at 1920×1080.
+ *   ≥1600px   nav 250px (full) · centre · rail 360px
+ *   1200–1599 nav 72px (icons) · centre · rail 320px
+ *   <1200px   nav drawer · centre, rail stacked below
+ */
+.shell {
+  --nav-w: 250px;
+  --nav-w-collapsed: 72px;
+  --rail-w: 360px;
+  display: grid;
+  grid-template-columns: var(--nav-w) minmax(0, 1fr);
+  grid-template-areas:
+    "bar bar"
+    "nav main";
+  grid-template-rows: auto 1fr;
+  column-gap: var(--gap);
+  min-height: 100vh;
+  padding: 0 var(--margin) var(--margin);
+}
+
+.shell[data-nav="collapsed"] {
+  grid-template-columns: var(--nav-w-collapsed) minmax(0, 1fr);
+}
+
+.main {
+  grid-area: main;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  gap: var(--gap);
+  min-width: 0;
+  padding-top: var(--gap);
+}
+
+/* Front Page: ticker and content in the centre column, rail on the right from the top. */
+.main:has(> [data-layout="front"]) {
+  grid-template-columns: minmax(0, 1fr) var(--rail-w);
+  /* The rail spans both rows; extra height goes to row 2, never the ticker. */
+  grid-template-rows: auto 1fr;
+}
+
+.main:has(> [data-layout="front"]) > :first-child {
+  grid-column: 1;
+}
+
+.scrim {
+  display: none;
+}
+
+@media (min-width: 1200px) and (max-width: 1599px) {
+  .shell {
+    --rail-w: 320px;
+    grid-template-columns: var(--nav-w-collapsed) minmax(0, 1fr);
+  }
+  .shell[data-nav="expanded"] {
+    grid-template-columns: var(--nav-w) minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 1199px) {
+  .shell,
+  .shell[data-nav] {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "bar"
+      "main";
+  }
+
+  .main:has(> [data-layout="front"]) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .shell[data-nav-open] .scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 44;
+    border: 0;
+    background: rgb(4 5 6 / 0.6);
+  }
+}

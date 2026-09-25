@@ -1,0 +1,90 @@
+.brief {
+  min-width: 0;
+  padding: 1.2rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--panel);
+}
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.header h3 {
+  margin: 0;
+  font: 700 1.6rem var(--font-display);
+  text-transform: uppercase;
+}
+.header p,
+.context {
+  margin: 0.4rem 0;
+  color: var(--text-2);
+}
+.selector {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+  width: min(100%, 30rem);
+  color: var(--text-2);
+  font-size: 0.85rem;
+}
+.selector select {
+  width: 100%;
+  min-width: 0;
+  padding: 0.6rem;
+  color: var(--text);
+  background: var(--panel);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+}
+.method,
+.description,
+.empty {
+  color: var(--text-3);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.question {
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--green);
+  border-radius: var(--radius-sm);
+  overflow-wrap: anywhere;
+}
+.question[data-question="gone"],
+.question[data-question="bad"] {
+  border-top-color: var(--amber);
+}
+.question h4 {
+  margin: 0;
+  font: 700 1.4rem var(--font-display);
+}
+.question ul {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+.question li {
+  margin-block: 0.9rem;
+}
+.question li p {
+  margin: 0 0 0.3rem;
+  line-height: 1.5;
+}
+.question a {
+  color: var(--green);
+  font-size: 0.85rem;
+}
+.question summary {
+  color: var(--text-2);
+  cursor: pointer;
+  padding-block: 0.5rem;
+}

@@ -1,0 +1,152 @@
+.section {
+  min-width: 0;
+}
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.header > div {
+  margin-right: auto;
+}
+.header[data-section-toolbar] {
+  position: sticky;
+  top: calc(var(--command-bar-height, 90px) + var(--section-heading-height, 0px));
+  z-index: 20;
+  padding-block: 10px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.header h3 {
+  margin: 0;
+  font: 700 26px var(--font-display);
+  text-transform: uppercase;
+}
+.header p {
+  margin: 3px 0 0;
+  color: var(--text-2);
+}
+.header label {
+  display: grid;
+  font-size: 13px;
+  gap: 5px;
+}
+.header select,
+.header button {
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  background: var(--panel);
+  padding: 9px 12px;
+  color: var(--text);
+}
+.header button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+.header button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+@media (max-width: 700px) {
+  .header[data-section-toolbar] {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 8px;
+  }
+  .header[data-section-toolbar] > div {
+    grid-column: 1 / -1;
+  }
+  .header[data-section-toolbar] h3 {
+    font-size: 22px;
+  }
+  .header[data-section-toolbar] p {
+    font-size: 14px;
+  }
+  .header[data-section-toolbar] select,
+  .header[data-section-toolbar] button {
+    width: 100%;
+    min-width: 0;
+    font-size: 14px;
+    padding: 8px;
+  }
+}
+.coverage {
+  color: var(--text-2);
+  font-size: 14px;
+  max-width: 1100px;
+}
+.timestamp {
+  color: var(--text-2);
+  font-size: 12px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  gap: 16px;
+}
+.card {
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-top: 2px solid var(--purple);
+  background: var(--panel);
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.cardTop {
+  display: flex;
+  justify-content: space-between;
+  color: var(--purple);
+  font-size: 12px;
+  text-transform: uppercase;
+}
+.card h4 {
+  font-size: 20px;
+  line-height: 1.25;
+  margin: 12px 0;
+  overflow-wrap: anywhere;
+}
+.card h4 a {
+  text-decoration: none;
+}
+.card a:hover {
+  text-decoration: underline;
+}
+.card ul {
+  padding-left: 18px;
+  color: var(--text-2);
+  margin: 0 0 18px;
+  overflow-wrap: anywhere;
+}
+.card dl {
+  display: flex;
+  gap: 28px;
+  margin-top: auto;
+  margin-bottom: 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+.card dt {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  font-size: 12px;
+  color: var(--text-2);
+}
+.card dd {
+  margin: 5px 0 0;
+  font: 600 24px var(--font-display);
+}
+.open {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-decoration: none;
+  color: var(--green);
+}

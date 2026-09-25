@@ -1,0 +1,50 @@
+{
+  "name": "omarchy-command-center",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev --hostname 127.0.0.1 --port 3510",
+    "build": "next build",
+    "start": "next start --hostname 127.0.0.1 --port 3510",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "verify": "npm run format:check && npm run lint && npm run typecheck && npm test && npm run build",
+    "test:smoke": "node scripts/smoke.mjs",
+    "screenshots": "node scripts/screenshots.mjs",
+    "deploy:local": "bash scripts/deploy-local.sh"
+  },
+  "dependencies": {
+    "@fontsource/barlow": "^5.3.0",
+    "@fontsource/barlow-condensed": "^5.3.0",
+    "@fontsource/jetbrains-mono": "^5.3.0",
+    "@xmldom/xmldom": "0.9.12",
+    "lucide-react": "^0.544.0",
+    "next": "^16.3.5",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "server-only": "^0.0.1"
+  },
+  "devDependencies": {
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.7",
+    "@types/node": "^24.13.6",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.3.5",
+    "jsdom": "^27.4.0",
+    "playwright-core": "^1.63.0",
+    "prettier": "^3.9.8",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.11"
+  },
+  "license": "Apache-2.0"
+}

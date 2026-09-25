@@ -1,0 +1,17 @@
+# Installed by scripts/deploy-local.sh; @DEPLOY@ and @NODE@ are substituted.
+[Unit]
+Description=Hermes Newsroom local command center
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=@DEPLOY@
+ExecStart=@NODE@ @DEPLOY@/node_modules/next/dist/bin/next start --hostname 127.0.0.1 --port 3520
+Environment=NODE_ENV=production
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=30
+NoNewPrivileges=yes
+
+[Install]
+WantedBy=default.target

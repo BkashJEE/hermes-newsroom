@@ -1,0 +1,137 @@
+/*
+ * Command Center design tokens.
+ * Shell tokens copy an Omarchy bar setup: charcoal
+ * pills with a #63636d hairline and a #19191c purpose-menu panel.
+ * Newsroom tokens follow the Hermes Newsroom reference: graphite panels,
+ * 4-6 px radii, Hermes green for verified intelligence and primary actions.
+ */
+:root {
+  color-scheme: dark;
+
+  /* surfaces */
+  --bg: #0a0b0c;
+  --bg-raised: #101213;
+  --panel: #131517;
+  --panel-2: #181b1d;
+  --panel-3: #1f2326;
+  --line: #24282b;
+  --line-strong: #343a3e;
+
+  /* text */
+  --text: #eef0ea;
+  --text-2: #b0b5b9;
+  --text-3: #80868b;
+
+  /* semantic accents */
+  --green: #76b900;
+  --green-strong: #8fd61a;
+  --green-ink: #0b1400;
+  --amber: #f2a93b;
+  --cyan: #2cc6e0;
+  --purple: #a07bff;
+  --red: #ff4f4f;
+  --blue: #5aa7ff;
+
+  /* shell (matches the Omarchy bar) */
+  --shell-bar: #111113;
+  --shell-pill: #36363d;
+  --shell-pill-line: #63636d;
+  --shell-menu: #19191c;
+  --shell-menu-line: rgb(255 255 255 / 0.16);
+  --shell-accent: var(--blue);
+
+  /* shape + rhythm */
+  --radius-sm: 4px;
+  --radius: 6px;
+  --gap: 16px;
+  --margin: 24px;
+  --focus: 0 0 0 2px var(--bg), 0 0 0 4px var(--green);
+
+  /* type */
+  --font-ui: "Barlow", "Google Sans Text", system-ui, sans-serif;
+  --font-display: "Barlow Condensed", "Barlow", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "JetBrainsMono Nerd Font", ui-monospace, monospace;
+  --font-shell: "Google Sans Text", "Barlow", system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 16px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (max-width: 640px) {
+  :root {
+    --margin: 16px;
+  }
+}
+
+@media (min-width: 2200px) {
+  html {
+    font-size: 17px;
+  }
+}
+
+a {
+  color: inherit;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus);
+  border-radius: var(--radius-sm);
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: absolute;
+  left: 12px;
+  top: -60px;
+  z-index: 100;
+  padding: 8px 14px;
+  background: var(--green);
+  color: var(--green-ink);
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+}
+
+.skip-link:focus {
+  top: 8px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,0 +1,244 @@
+.reader {
+  min-width: 0;
+}
+.navigation {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+  margin: 16px 0;
+  font: 14px/1.4 var(--font-ui);
+}
+.printNote {
+  font: 13px/1.5 var(--font-ui);
+}
+.sheet {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  max-width: 850px;
+  min-height: 1100px;
+  padding: 36px;
+  margin: 24px auto;
+  background: #faf9f0;
+  color: #24231e;
+  border: 1px solid #bfc2b8;
+  box-shadow: 0 5px 18px #0002;
+  font:
+    16px/1.5 Georgia,
+    serif;
+  overflow-wrap: anywhere;
+  scroll-margin-top: calc(var(--command-bar-height, 90px) + var(--personal-controls-height, 160px) + 16px);
+}
+.sheet::before {
+  content: "HERMES";
+  position: absolute;
+  z-index: -1;
+  top: 45%;
+  left: 5%;
+  right: 5%;
+  font:
+    700 clamp(40px, 8vw, 100px)/1 Georgia,
+    serif;
+  text-align: center;
+  color: #24477808;
+}
+.masthead {
+  text-align: center;
+  border-bottom: 3px double #24231e;
+}
+.masthead p {
+  font-style: italic;
+  margin: 0 0 10px;
+}
+.masthead h3 {
+  color: #244778;
+  font:
+    700 clamp(32px, 5vw, 58px)/1.05 Georgia,
+    serif;
+  letter-spacing: -0.06em;
+  margin: 0 0 16px;
+}
+.masthead div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 0;
+  font: 12px/1.4 var(--font-mono);
+}
+.sectionHead {
+  padding: 16px 0;
+  border-bottom: 1px solid #777a71;
+  margin-bottom: 20px;
+}
+.sectionHead h4 {
+  font:
+    700 26px/1.1 Georgia,
+    serif;
+  margin: 0 0 5px;
+}
+.sectionHead p {
+  margin: 0;
+  font-style: italic;
+}
+.lead {
+  font:
+    700 30px/1.15 Georgia,
+    serif;
+  margin: 0 0 12px;
+}
+.byline {
+  font: 12px/1.5 var(--font-ui);
+  padding-bottom: 12px;
+}
+.columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+.columns section {
+  border-top: 1px solid #777a71;
+  padding-top: 14px;
+  min-width: 0;
+}
+.columns > section:only-child {
+  grid-column: 1 / -1;
+}
+.columns h5 {
+  font:
+    700 21px/1.2 Georgia,
+    serif;
+  margin: 0 0 10px;
+}
+.columns ul {
+  padding-left: 18px;
+  margin: 0;
+}
+.columns li {
+  margin-bottom: 12px;
+}
+.missing {
+  grid-column: 1 / -1;
+}
+.reflection {
+  color: #575044;
+}
+.citations {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  font: 12px/1.3 var(--font-mono);
+}
+.citations a {
+  color: #244778;
+}
+.sheet footer {
+  margin-top: auto;
+  padding-top: 20px;
+  border-top: 1px solid #777a71;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  font: 11px/1.5 var(--font-mono);
+}
+.sheet footer strong {
+  white-space: nowrap;
+}
+@media (max-width: 700px) {
+  .sheet {
+    min-height: 0;
+    padding: 18px;
+  }
+  .columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .sheet footer {
+    margin-top: 24px;
+    font-size: 12px;
+  }
+}
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 10mm;
+  }
+  :global(html):has(.reader),
+  :global(body):has(.reader) {
+    background: white !important;
+    color-scheme: light !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  :global(body):has(.reader) > :not([data-newsroom-shell]),
+  :global([data-newsroom-shell]):has(.reader) > :not([data-newsroom-main]),
+  :global([data-newsroom-main]):has(.reader) > :not([data-personal-daily]),
+  :global([data-personal-daily]) > :not([data-personal-paper]) {
+    display: none !important;
+  }
+  :global([data-newsroom-shell]):has(.reader),
+  :global([data-newsroom-main]):has(.reader),
+  :global([data-personal-daily]),
+  .reader {
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    max-width: none !important;
+    background: white !important;
+  }
+  .navigation,
+  .printNote {
+    display: none;
+  }
+  .sheet {
+    box-sizing: border-box;
+    width: 190mm;
+    max-width: none;
+    min-height: 276mm;
+    margin: 0;
+    padding: 7mm;
+    border: 0;
+    box-shadow: none;
+    break-after: page;
+    font-size: 10pt;
+    line-height: 1.35;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+  .sheet:last-child {
+    break-after: auto;
+  }
+  .masthead h3 {
+    font-size: 32pt;
+  }
+  .masthead div {
+    font-size: 8pt;
+  }
+  .sectionHead {
+    margin-bottom: 12px;
+    padding: 12px 0;
+  }
+  .sectionHead h4 {
+    font-size: 20pt;
+  }
+  .lead {
+    font-size: 23pt;
+  }
+  .columns {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 5mm;
+  }
+  .columns h5 {
+    font-size: 16pt;
+  }
+  .byline,
+  .citations {
+    font-size: 8pt;
+  }
+  .sheet footer {
+    font-size: 8pt;
+    margin-top: auto;
+  }
+}

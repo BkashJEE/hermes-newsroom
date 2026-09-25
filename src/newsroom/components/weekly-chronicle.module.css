@@ -1,0 +1,123 @@
+.purpose {
+  color: var(--text-2);
+  max-width: 1000px;
+  line-height: 1.5;
+}
+.coverage {
+  margin: 12px 0 24px;
+  color: var(--text-2);
+  font-size: 14px;
+}
+.coverage summary,
+.activity > summary,
+.details summary {
+  cursor: pointer;
+}
+.desk {
+  margin: 24px 0;
+}
+.desk > h3 {
+  font: 700 26px var(--font-display);
+  margin: 0;
+  text-transform: uppercase;
+}
+.desk > p,
+.activity > p {
+  color: var(--text-2);
+  font-size: 14px;
+  margin: 5px 0 14px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap: 12px;
+  align-items: start;
+}
+.card {
+  border: 1px solid var(--line);
+  border-top: 2px solid var(--purple);
+  border-radius: 4px;
+  padding: 16px;
+  background: var(--panel);
+  min-width: 0;
+}
+.label {
+  color: var(--purple);
+  font-size: 12px;
+  line-height: 1.4;
+  margin: 0 0 8px;
+  text-transform: uppercase;
+}
+.card h4 {
+  font-size: 18px;
+  line-height: 1.35;
+  margin: 0 0 10px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+.card a {
+  text-decoration: none;
+}
+.card a:hover {
+  text-decoration: underline;
+}
+.points {
+  padding-left: 17px;
+  margin: 0 0 12px;
+  color: var(--text-2);
+  font-size: 14px;
+  line-height: 1.45;
+}
+.points li {
+  max-height: 4.35em;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+.points li + li {
+  margin-top: 5px;
+}
+.points li::before {
+  content: "• ";
+  color: var(--green);
+}
+.card footer {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-3);
+  font-size: 12px;
+  margin: 12px 0;
+}
+.details {
+  border-top: 1px solid var(--line);
+  padding-top: 10px;
+  font-size: 14px;
+}
+.details summary {
+  color: var(--green);
+}
+.details > div {
+  margin-top: 14px;
+  overflow-wrap: anywhere;
+}
+.details ul {
+  padding-left: 18px;
+  color: var(--text-2);
+  line-height: 1.5;
+}
+.activity {
+  border-top: 1px solid var(--line);
+  margin: 24px 0;
+  padding-top: 16px;
+}
+.activity > summary {
+  font: 600 23px var(--font-display);
+}
+.empty {
+  padding: 16px;
+  border: 1px dashed var(--line);
+}

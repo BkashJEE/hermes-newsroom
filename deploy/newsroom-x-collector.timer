@@ -1,0 +1,11 @@
+[Unit]
+Description=Collect at most 20 public X search posts every five minutes
+
+[Timer]
+OnCalendar=*-*-* *:00/5:00
+AccuracySec=1s
+Persistent=false
+Unit=newsroom-x-collector.service
+
+[Install]
+WantedBy=timers.target

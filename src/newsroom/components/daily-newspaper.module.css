@@ -1,0 +1,440 @@
+.viewSwitch {
+  display: flex;
+  gap: 4px;
+}
+.toolbar .viewSwitch {
+  margin-right: 0;
+}
+.viewSwitch button[aria-pressed="false"] {
+  background: transparent;
+  color: var(--text-2);
+  border-color: var(--line-strong);
+}
+.viewSwitch button[aria-pressed="true"] {
+  background: var(--green);
+  color: var(--green-ink);
+  border-color: var(--green);
+}
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+  gap: 16px;
+  /* Stretch: every card in a row ends at the same baseline. */
+  align-items: stretch;
+}
+.cardEmpty {
+  padding: 24px;
+  border: 1px dashed var(--line-strong);
+}
+.method {
+  margin-top: 18px;
+  padding: 14px 18px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  color: var(--text-2);
+}
+.method summary {
+  cursor: pointer;
+}
+.method p {
+  max-width: 900px;
+  margin-bottom: 0;
+}
+.reader[data-view="cards"] .edition,
+.reader[data-view="newspaper"] .cardView {
+  display: none;
+}
+.reader {
+  --paper: #faf9f0;
+  --ink: #22251f;
+  --blue-ink: #244778;
+  min-width: 0;
+}
+.toolbar {
+  position: sticky;
+  top: calc(var(--command-bar-height, 90px) + var(--section-heading-height, 0px));
+  z-index: 20;
+  background: var(--bg);
+  padding-block: 10px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.toolbar > div {
+  margin-right: auto;
+}
+.toolbar p {
+  margin: 3px 0 0;
+  color: var(--text-2);
+}
+.toolbar button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 1px solid #818d9a;
+  background: #203956;
+  color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.toolbar button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.hint {
+  font-size: 13px;
+  color: var(--text-2);
+}
+.pageNav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+  margin: 16px 0 24px;
+  font-size: 14px;
+}
+.pageNav a {
+  text-underline-offset: 4px;
+}
+.sheet {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 850px;
+  min-height: 1100px;
+  margin: 0 auto 28px;
+  padding: 38px;
+  color-scheme: light;
+  color: var(--ink);
+  background: var(--paper);
+  box-shadow: 0 6px 28px #0005;
+  font:
+    16px/1.45 Georgia,
+    "Times New Roman",
+    serif;
+  scroll-margin-top: 95px;
+  overflow-wrap: anywhere;
+}
+.sheet::before {
+  content: "HERMES";
+  position: absolute;
+  z-index: -1;
+  inset: 45% 0 auto;
+  color: #24477806;
+  text-align: center;
+  font:
+    700 clamp(45px, 8vw, 100px)/1 Georgia,
+    serif;
+  letter-spacing: 0.08em;
+  pointer-events: none;
+}
+.sheet :is(button, a):focus-visible {
+  outline: 2px solid var(--blue-ink);
+  outline-offset: 4px;
+  box-shadow: none;
+}
+.masthead {
+  text-align: center;
+  border-bottom: 3px double var(--ink);
+  padding-bottom: 12px;
+}
+.masthead > p {
+  font-style: italic;
+  margin: 0 0 8px;
+}
+.masthead h2 {
+  color: var(--blue-ink);
+  font:
+    700 clamp(34px, 5.4vw, 66px)/1 Georgia,
+    serif;
+  letter-spacing: -0.065em;
+  margin: 0 0 14px;
+}
+.masthead > div,
+.runningHead,
+.footer {
+  font: 12px/1.4 var(--font-mono);
+}
+.runningHead {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--ink);
+}
+.sectionHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid #777a71;
+  margin-bottom: 22px;
+}
+.sectionHead h3 {
+  font: 700 24px/1.2 var(--font-ui);
+  margin: 0;
+}
+.sectionHead p {
+  font-size: 14px;
+  font-style: italic;
+  margin: 0;
+}
+.pageBody {
+  flex: 1;
+  min-width: 0;
+}
+.stories {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+.frontStories {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+}
+.story {
+  min-width: 0;
+  break-inside: avoid;
+  border-top: 1px solid #777a71;
+  padding-top: 12px;
+}
+.story.lead {
+  grid-column: 1 / -1;
+  border-top: none;
+  padding-top: 0;
+}
+.story h4 {
+  font:
+    700 25px/1.12 Georgia,
+    serif;
+  margin: 7px 0 12px;
+}
+.lead h4 {
+  font-size: 36px;
+  max-width: 680px;
+}
+.story h4 button {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.story h4 button:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+.kicker {
+  font: 700 12px/1.4 var(--font-ui);
+  text-transform: uppercase;
+  color: var(--blue-ink);
+  margin: 0;
+}
+.byline {
+  font-size: 12px;
+  color: #55594f;
+  margin: 0 0 12px;
+  font-style: italic;
+}
+.story ul {
+  margin: 0 0 12px;
+  padding-left: 17px;
+}
+.story li {
+  margin-bottom: 9px;
+}
+.story a {
+  color: var(--blue-ink);
+  font-size: 13px;
+  text-underline-offset: 3px;
+}
+.deskNote {
+  margin-top: 26px;
+  padding-top: 14px;
+  border-top: 1px solid var(--ink);
+  font-size: 14px;
+}
+.deskNote h4 {
+  font: 700 15px var(--font-ui);
+  text-transform: uppercase;
+  margin: 0 0 8px;
+  color: var(--blue-ink);
+}
+.deskNote p {
+  margin: 0;
+}
+.deskNote ul {
+  padding-left: 17px;
+  margin: 0;
+}
+.deskNote li {
+  margin-bottom: 8px;
+}
+.footer {
+  border-top: 1px solid var(--ink);
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 10px;
+  margin-top: 28px;
+}
+.footer > :last-child {
+  white-space: nowrap;
+}
+.empty {
+  border-block: 1px solid #777a71;
+  padding: 22px 0;
+  font-style: italic;
+}
+.cutoff {
+  font-size: 13px;
+  margin-top: 0;
+}
+.sourceList {
+  padding-left: 22px;
+  margin: 20px 0;
+}
+.sourceList li {
+  padding: 0 0 10px 6px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #d2d3ca;
+  font-size: 14px;
+  break-inside: avoid;
+}
+.sourceList strong,
+.sourceList span,
+.sourceList a {
+  display: block;
+}
+.sourceList span,
+.sourceList a {
+  font-size: 12px;
+}
+.sourceList a {
+  color: var(--blue-ink);
+}
+@media (max-width: 650px) {
+  .sheet {
+    padding: 22px 18px;
+    min-height: auto;
+  }
+  .stories,
+  .frontStories {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .lead h4 {
+    font-size: 29px;
+  }
+  .runningHead {
+    flex-direction: column;
+    gap: 3px;
+  }
+  .footer {
+    font-size: 12px;
+  }
+}
+@media print {
+  .reader[data-view] .edition {
+    display: block;
+  }
+  @page {
+    size: A4 portrait;
+    background: white;
+    margin: 10mm;
+  }
+  :global(html):has(.reader),
+  :global(body):has(.reader) {
+    margin: 0 !important;
+    padding: 0 !important;
+    min-height: 0 !important;
+    background: white !important;
+    color-scheme: light !important;
+    color: #22251f !important;
+  }
+  :global(body):has(.reader) > :not([data-newsroom-shell]),
+  :global([data-newsroom-shell]):has(.reader) > :not([data-newsroom-main]),
+  :global([data-newsroom-main]):has(.reader) > :not([data-newspaper-section]),
+  :global([data-newspaper-section]):has(.reader) > :not(.reader) {
+    display: none !important;
+  }
+  :global([data-newsroom-shell]):has(.reader),
+  :global([data-newsroom-main]):has(.reader),
+  :global([data-newspaper-section]):has(.reader),
+  .reader {
+    display: block !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  .cardView,
+  .toolbar,
+  .hint,
+  .pageNav {
+    display: none;
+  }
+  .sheet {
+    width: 190mm;
+    max-width: none;
+    min-height: 276mm;
+    margin: 0;
+    padding: 7mm;
+    box-shadow: none;
+    break-after: page;
+    font-size: 10pt;
+    line-height: 1.35;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+  .sheet:last-child {
+    break-after: auto;
+  }
+  .masthead h2 {
+    font-size: 36pt;
+  }
+  .lead h4 {
+    font-size: 25pt;
+  }
+  .story h4 {
+    font-size: 19pt;
+  }
+  .story.lead h4 {
+    font-size: 25pt;
+  }
+  .stories {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 5mm;
+  }
+  .frontStories {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .runningHead {
+    flex-direction: row;
+  }
+  .sectionHead {
+    margin-bottom: 12px;
+  }
+  .deskNote {
+    font-size: 10pt;
+  }
+  .sourceList {
+    margin-block: 12px;
+  }
+  .sourceList li {
+    padding-bottom: 7px;
+    margin-bottom: 7px;
+  }
+  .footer {
+    font-size: 9pt;
+  }
+}

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 120" role="img" aria-label="Monogram H on a dark tile">
+  <rect width="160" height="120" fill="#101213"/>
+  <path d="M80 18 114 37v38L80 94 46 75V37Z" fill="none" stroke="#3a4146" stroke-width="3"/>
+  <path d="M66 40v36M94 40v36M66 58h28" stroke="#76b900" stroke-width="7" stroke-linecap="square"/>
+</svg>
