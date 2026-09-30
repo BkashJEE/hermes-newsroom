@@ -58,7 +58,7 @@ function Panel({ path }: { path: string }) {
       const output = `${result.composedBy} · ${new Date(result.generatedAt).toLocaleString()} · ${result.feedMode} data\n\n${result.text}`;
       setText(output);
       writeJSON(key, output);
-      setStatus("Hermes connected");
+      setStatus((current) => (current.startsWith("Hermes connected") ? current : "Hermes connected"));
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Request failed.");
     } finally {

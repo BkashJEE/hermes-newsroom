@@ -198,6 +198,27 @@ Copy `config/newsroom.example.json` to `config/newsroom.local.json` (git-ignored
 Use a loopback base URL with its port, without `/v1`. Deploy copies `.env` to the
 private runtime with mode 0600. See [provider configuration and tool-isolation limits](docs/providers.md).
 
+#### Hermes gateway on another machine
+
+By default Newsroom only talks to a Hermes gateway on the same machine; a
+non-loopback `HERMES_API_URL` is refused, and the Hermes Agent panel names the
+refused address. To use a gateway on another host (for example the Desktop app on
+one machine and the agent on a Linux box in the same tailnet), opt in explicitly:
+
+```sh
+HERMES_ALLOW_REMOTE_GATEWAY=1
+HERMES_API_URL=https://gateway.your-tailnet.ts.net:8642   # http or https, host:port, no /v1
+HERMES_API_KEY=<that host's API_SERVER_KEY>
+```
+
+`HERMES_API_KEY` is required in this mode; the key in a local `~/.hermes/.env` is
+never used for a remote gateway. The panel then says whether the remote gateway is
+connected or unreachable and never asks you to start a local one.
+
+Security trade-off: the API key travels with every request, so only enable this
+over a private network or tailnet, or towards an `https` gateway. Never point it at
+a gateway that is reachable from the public internet over plain `http`.
+
 The separate personal work newspaper is disabled by default. Enable
 `personalDaily.enabled` only in local configuration; see [Personal Daily data flow](docs/personal-daily.md).
 Its generation sends selected work excerpts through the local Hermes gateway, which may call a cloud model.

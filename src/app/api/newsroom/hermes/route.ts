@@ -91,7 +91,7 @@ export async function POST(request: NextRequest) {
     const message =
       error instanceof Error && /^Hermes returned/.test(error.message)
         ? error.message
-        : "Hermes could not finish this request. Check the local gateway and try again.";
+        : "Hermes could not finish this request. Check the Hermes gateway and try again.";
     return Response.json({ error: message }, { status: 502 });
   } finally {
     busy = false;

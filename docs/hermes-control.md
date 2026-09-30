@@ -7,8 +7,11 @@ with Hermes**; the Daily dialog offers **Write daily with Hermes**. Local summar
 remain available without an agent connection. Nothing is automatically published.
 
 The server discovers the loopback gateway from the user's Hermes gateway state and
-reads its API key server-side. Neither credentials nor arbitrary gateway URLs are
-accepted from the browser. Requests require a custom header and same-origin checks,
+reads its API key server-side. A gateway on another host is used only when the
+operator sets `HERMES_ALLOW_REMOTE_GATEWAY=1` with `HERMES_API_URL` and
+`HERMES_API_KEY` in the server environment (see `docs/providers.md`); the panel then
+says it is talking to a remote gateway. Neither credentials nor arbitrary gateway
+URLs are accepted from the browser. Requests require a custom header and same-origin checks,
 validate tasks and story IDs, use server-loaded evidence, reject overlapping runs,
 and time out after three minutes. Errors do not contain upstream response bodies.
 The gateway retains its configured tool permissions; the editorial system prompt
