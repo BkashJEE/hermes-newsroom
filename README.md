@@ -119,7 +119,7 @@ The installer fetches it for you; you never have to visit it.
 
 Ranked, evidence-scored AI intelligence, with a clear next action for each story.
 
-- **Front Page**: lead intelligence story, Developing / Community Signal / New Build flashcards, a Live Intelligence list, and a decision rail (What Should I Do?, Signal Meter, Trending Now, Content Opportunity).
+- **Front Page**: lead intelligence story, Developing / Community Signal / New Build flashcards, a Live Intelligence list, and a reading rail (What Should I Do?, Signal Meter, Trending Now). Every action on that rail is local — track or ignore a story. Nothing is drafted, queued or sent.
 - **Command bar**: live/paused, search, source and time filters, manual refresh, last-updated time, Generate Daily.
 - **Breaking ticker**: dismissible, pausable, and it never auto-advances under reduced motion.
 - **Filters**: search, source, time range, intelligence type, sort and watchlist. All persist in the URL.

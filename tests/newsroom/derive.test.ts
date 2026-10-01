@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 import {
-  contentOpportunity,
   pickFlashcards,
   pickLead,
   signalMeter,
@@ -72,13 +71,6 @@ describe("rail widgets", () => {
     expect(topics).toHaveLength(5);
     expect(topics.map((t) => t.rank)).toEqual([1, 2, 3, 4, 5]);
     expect(topics.every((t) => t.sources >= 1)).toBe(true);
-  });
-
-  it("prefers an opportunity story for the content opportunity", () => {
-    const opportunity = contentOpportunity(stories);
-    expect(opportunity?.story.type).toBe("opportunity");
-    expect(opportunity?.evidenceReadiness).toBe("Ready");
-    expect(contentOpportunity([])).toBeNull();
   });
 
   it("feeds only breaking stories to the ticker", () => {

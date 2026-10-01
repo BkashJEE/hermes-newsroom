@@ -122,10 +122,9 @@ All widgets derive from the _filtered_ story list (`src/newsroom/model/derive.ts
 - **Lead Intelligence** — the most important `verified` story (falls back to the most important story).
 - **Flashcards** — the top `developing`, `community` and `build` stories; an empty slot says so.
 - **Live Intelligence** — the rest of the filtered feed as a table. Selecting a row opens its intelligence file.
-- **What Should I Do?** — acts on the focused story (last opened, else the lead).
+- **What Should I Do?** — acts on the focused story (last opened, else the lead). Track or ignore, both local.
 - **Signal Meter** — per signal area, average relevance weighted by momentum.
 - **Trending Now** — top five topics by summed momentum, with distinct-source counts.
-- **Content Opportunity** — the top `opportunity` story (else the highest-actionability story).
 - **Breaking ticker** — `breaking` stories. It changes item every 8 s, pauses on hover/focus or via its button, and never auto-advances under `prefers-reduced-motion`.
 
 ## Section previews
