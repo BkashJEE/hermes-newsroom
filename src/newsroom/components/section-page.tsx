@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { JevLiveDesk } from "./jev-live-desk";
 import { CommunityBuilds } from "./community-builds";
+import { CollectionRecord } from "./collection-record";
 import { WeeklyChronicleCards } from "./weekly-chronicle";
 import { DailyNewspaper } from "./daily-newspaper";
 import { PersonalDaily } from "./personal-daily";
@@ -71,8 +72,7 @@ function LiveWire() {
   const newest = sortStories(filtered, "newest");
   return (
     <>
-      {" "}
-      <JevLiveDesk stories={newest} />{" "}
+      <CollectionRecord /> <JevLiveDesk stories={newest} />{" "}
       {newest.length === 0 ? (
         <Empty>
           {sourceNotConnected(feed?.mode, filters.source, feed?.connectedSources)
