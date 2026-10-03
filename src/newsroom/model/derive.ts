@@ -108,39 +108,6 @@ export function trendingTopics(stories: Story[], limit = 5): TrendingTopic[] {
     }));
 }
 
-export interface ContentOpportunity {
-  story: Story;
-  angle: string;
-  novelty: "Low" | "Medium" | "High";
-  audienceFit: "Low" | "Medium" | "High";
-  evidenceReadiness: "Not ready" | "Needs sources" | "Ready";
-}
-
-function band(value: number): "Low" | "Medium" | "High" {
-  if (value >= 75) return "High";
-  if (value >= 50) return "Medium";
-  return "Low";
-}
-
-/** The best opportunity story, else the most actionable story. */
-export function contentOpportunity(stories: Story[]): ContentOpportunity | null {
-  const story =
-    stories.find((s) => s.type === "opportunity") ??
-    [...stories].sort((a, b) => b.actionability - a.actionability)[0];
-  if (!story) return null;
-  return {
-    story,
-    angle: story.file.nextAction,
-    // Few independent sources + rising attention = a less-covered, novel angle.
-    novelty: band(
-      100 - Math.min(100, story.sourceCount * 10) + (story.momentum.direction === "rising" ? 20 : 0),
-    ),
-    audienceFit: band(story.relevanceScore),
-    evidenceReadiness:
-      story.evidenceScore >= 75 ? "Ready" : story.evidenceScore >= 50 ? "Needs sources" : "Not ready",
-  };
-}
-
 export function tickerStories(stories: Story[]): Story[] {
   return stories.filter((s) => s.type === "breaking");
 }

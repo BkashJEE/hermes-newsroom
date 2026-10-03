@@ -1,18 +1,6 @@
 "use client";
 
-import {
-  ArrowRight,
-  Boxes,
-  ChevronRight,
-  FlaskConical,
-  Lightbulb,
-  MessageSquareReply,
-  Radar,
-  Share2,
-  Trash2,
-  X,
-  type LucideIcon,
-} from "lucide-react";
+import { ChevronRight, Radar, X, type LucideIcon } from "lucide-react";
 import { hasMeasuredMomentum, pickLead, signalMeter, trendingTopics } from "../model/derive";
 import type { RecommendedAction, Story } from "../model/story";
 import { useNewsroom } from "../state/newsroom-store";
