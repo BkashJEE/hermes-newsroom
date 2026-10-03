@@ -33,6 +33,13 @@ independently to `$HOME/.hermes/gateway_state.json` and `API_SERVER_KEY` in
 are server-only and never use `NEXT_PUBLIC_`. Local deployment copies `.env` into
 the private release with mode 0600. Restart/redeploy after changing settings.
 
+A gateway on another host is refused unless `HERMES_ALLOW_REMOTE_GATEWAY=1` is set.
+With the opt-in, `HERMES_API_URL` may be any `http` or `https` `host:port` base
+(explicit port, no path or query) and `HERMES_API_KEY` becomes mandatory: the local
+`.hermes/.env` key is only ever used for a loopback gateway. Loopback behaviour is
+unchanged whether or not the flag is set. The key is sent over the network with
+every request; use this only across a private network or tailnet, or with `https`.
+
 ## Prompt injection and tool isolation
 
 Live titles, summaries and URLs are **untrusted input**. Personal conversation
