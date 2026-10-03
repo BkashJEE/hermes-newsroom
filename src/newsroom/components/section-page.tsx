@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { JevLiveDesk } from "./jev-live-desk";
 import { CommunityBuilds } from "./community-builds";
+import { CollectionRecord } from "./collection-record";
 import { WeeklyChronicleCards } from "./weekly-chronicle";
 import { DailyNewspaper } from "./daily-newspaper";
 import { PersonalDaily } from "./personal-daily";
@@ -71,8 +73,7 @@ function LiveWire() {
   const newest = sortStories(filtered, "newest");
   return (
     <>
-      {" "}
-      <JevLiveDesk stories={newest} />{" "}
+      <CollectionRecord /> <JevLiveDesk stories={newest} />{" "}
       {newest.length === 0 ? (
         <Empty>
           {sourceNotConnected(feed?.mode, filters.source, feed?.connectedSources)
@@ -88,6 +89,44 @@ function LiveWire() {
       )}
     </>
   );
+}
+
+function EditionRange() {
+  const { filters } = useNewsroom();
+  const params = useSearchParams();
+  return (
+    <nav className={styles.editionRange} aria-label="Edition range">
+      {(
+        [
+          ["today", "Today"],
+          ["week", "This week"],
+        ] as const
+      ).map(([range, label]) => {
+        const query = new URLSearchParams(params?.toString());
+        query.set("range", range);
+        query.delete("from");
+        query.delete("to");
+        return (
+          <Link
+            key={range}
+            href={`/newsroom/editions?${query}`}
+            scroll={false}
+            aria-current={filters.range === range ? "page" : undefined}
+          >
+            {label}
+          </Link>
+        );
+      })}
+      <span>
+        {filters.range === "week" ? "Past seven days" : "Since midnight, your local time"} · public news
+      </span>
+    </nav>
+  );
+}
+
+function Editions() {
+  const { filters } = useNewsroom();
+  return filters.range === "week" ? <WeeklyChronicle /> : <DailyNewspaper initialView="cards" />;
 }
 
 function WeeklyChronicle() {
@@ -297,8 +336,7 @@ function Archive() {
 const SECTION_BODIES: Record<string, () => ReactNode> = {
   "hermes-agent-updates": HermesAgentUpdates,
   "live-wire": LiveWire,
-  "hermes-daily": DailyNewspaper,
-  "weekly-chronicle": WeeklyChronicle,
+  editions: Editions,
   "built-with-hermes": BuiltWithHermes,
   "trend-radar": TrendRadar,
   archive: Archive,
@@ -318,7 +356,7 @@ export function SectionPage({ sectionId }: { sectionId: string }) {
     <section
       className={styles.page}
       aria-labelledby="section-title"
-      data-newspaper-section={sectionId === "hermes-daily" || undefined}
+      data-newspaper-section={sectionId === "editions" || undefined}
     >
       <header ref={headingRef} className={styles.header} data-section-heading>
         <span className={styles.icon}>
@@ -332,7 +370,7 @@ export function SectionPage({ sectionId }: { sectionId: string }) {
             <span className={styles.pill}>Workspace</span>
           </div>
           <p className={styles.description}>{section.description}</p>
-          {isFiltered(filters) ? (
+          {isFiltered(sectionId === "editions" ? { ...filters, range: "24h" } : filters) ? (
             <button type="button" className={styles.secondary} onClick={clearFilters}>
               Clear filters
             </button>
@@ -340,6 +378,7 @@ export function SectionPage({ sectionId }: { sectionId: string }) {
         </div>
       </header>
 
+      {sectionId === "editions" ? <EditionRange /> : null}
       {!feed ? (
         status === "loading" ? (
           <FrontPageSkeleton />

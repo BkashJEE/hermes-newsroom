@@ -31,7 +31,7 @@ How much that removes depends on which sources are on and what the week looked
 like; the record on the page always shows the figure for the edition in front of
 you.
 
-**It shows you its working.** The front page carries a collection record: how many
+**It shows you its working.** Live Wire and a disclosure beneath the Front Page carry the same collection record: how many
 signals were collected, how many reported an event, and how many were excluded
 under each rule — with the excluded items listed and linked, so you can check a
 decision instead of trusting it. A feed that filters silently is indistinguishable
@@ -43,9 +43,13 @@ why, and the fix is a pull request rather than a prompt.
 
 ## What you get
 
-<img src="docs/images/hermes-daily.png" alt="Hermes Daily: a nine-story edition with a printable newspaper view" width="820">
+<img src="docs/images/front-page.png" alt="Front Page: one lead story and four supporting events, using labelled demo data" width="820">
 
-A daily edition you can read or print, built from what the sources actually published.
+Five selected events, with the sources one click away. Quiet days stay short.
+
+<img src="docs/images/editions.png" alt="Editions: Today and This week in one public-news view, using labelled demo data" width="820">
+
+Public editions you can read or print, built from what the sources actually published. Today and the weekly recap retain their own layouts.
 
 <img src="docs/images/agent-updates.png" alt="Hermes Agent Updates: what changed, is new, is gone, is better, is bad" width="820">
 
@@ -62,12 +66,11 @@ sources on.
 
 | Section                  | What it shows                                                                     |
 | ------------------------ | --------------------------------------------------------------------------------- |
-| **Front Page**           | The most important intelligence right now, filled to a full page.                 |
+| **Front Page**           | Up to five selected events, with sources and no routine activity filler.          |
 | **Hermes Agent Updates** | What changed, is new, is gone, is better and is bad, from source statements only. |
 | **Live Wire**            | Every incoming signal in order, as it lands.                                      |
-| **Hermes Daily**         | Today's edition as flashcards, or a four-page newspaper to read and print.        |
+| **Editions**             | Today’s public news or the past week’s recap, with sources and printable layouts. |
 | **My Hermes Daily**      | A personal newspaper built from your own Hermes work records.                     |
-| **Weekly Chronicle**     | The week around Hermes Agent: releases, merges, and what the community shipped.   |
 | **Built With Hermes**    | New projects, skills and tools people are building on Hermes.                     |
 | **Trend Radar**          | Topic coverage across connected sources, with momentum where it is measured.      |
 | **Archive**              | Saved and dismissed stories, searchable.                                          |
@@ -160,10 +163,7 @@ Ranked, evidence-scored AI intelligence, with a clear next action for each story
 
 ### Hermes and live sources
 
-All eight sections work with the current feed. Each has a **Hermes Agent** panel;
-daily/weekly briefs and post/reply drafts can be written by the installed agent.
-Content Desk supports saved drafts, edits, copying and removal. Archive retains
-saved and dismissed stories across feed changes.
+Public sections report the current feed; **My Hermes Daily** stays separate and reads opted-in local work records. The **Hermes Agent** panel can summarize public news with source links. Archive retains saved and dismissed stories across feed changes.
 
 The committed default is clearly labelled fixture data. Set `liveSources: true`
 in ignored `config/newsroom.local.json` for Hacker News AI discussions and official
@@ -318,6 +318,6 @@ Security reports: [SECURITY.md](SECURITY.md). Contributing:
 
 ### Daily reading views
 
-Hermes Daily opens as a responsive grid of flashcards for all matching, undismissed stories. Use **Newspaper** for a four-page editorial selection with short bullets, source links and a source ledger. **Print / Save PDF** uses that newspaper layout from either view; choose A4 portrait, 100% scale and disable browser headers/footers. The browser handles PDF saving locally. This is a feed-based edition, not an automatic model-generated report.
+Editions combines the external daily and weekly desks. **Today** covers events since local midnight; **This week** covers the past seven days. The switch is inside Editions and its range is saved in the URL. Old `/newsroom/hermes-daily` and `/newsroom/weekly-chronicle` bookmarks redirect with the appropriate range selected. Today opens as a responsive grid of up to nine selected stories. Use **Newspaper** for a four-page editorial selection with short bullets, source links and a source ledger. **Print / Save PDF** uses that newspaper layout from either view; choose A4 portrait, 100% scale and disable browser headers/footers. The browser handles PDF saving locally. This is a feed-based edition, not an automatic model-generated report.
 
 Built With Hermes also discovers public community projects and integrations on GitHub, ranked by lifetime stars with visible fork counts and last-push dates. Official agent releases are listed separately. Social virality from X/Reddit/Facebook and recent star-growth rates are not yet available; see [provider coverage](docs/providers.md).

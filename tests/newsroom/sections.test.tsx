@@ -22,8 +22,8 @@ async function feed() {
   return new Response(JSON.stringify(result), { status: 200 });
 }
 
-function renderSection(id: string) {
-  setUrl(`/newsroom/${id}`);
+function renderSection(id: string, query = "") {
+  setUrl(`/newsroom/${id}${query}`);
   return render(
     <NewsroomProvider>
       <SectionPage sectionId={id} />
@@ -149,7 +149,8 @@ describe("section workspaces", () => {
   it("Hermes Daily displays four newspaper pages and opens the browser print dialog", async () => {
     const user = userEvent.setup();
     const print = vi.spyOn(window, "print").mockImplementation(() => {});
-    renderSection("hermes-daily");
+    renderSection("editions", "?range=today");
+    await user.click(await screen.findByRole("button", { name: "Newspaper" }));
     await screen.findByRole("region", { name: /^Newspaper page 1/ });
     expect(screen.getByRole("button", { name: "Newspaper" })).toHaveAttribute("aria-pressed", "true");
     expect(await screen.findAllByRole("region", { name: /^Newspaper page/ })).toHaveLength(4);
@@ -165,11 +166,13 @@ describe("section workspaces", () => {
   });
 
   it("Weekly Chronicle shows only the Hermes ecosystem with a compact card grid", async () => {
-    renderSection("weekly-chronicle");
+    renderSection("editions", "?range=week");
     const grid = await screen.findByRole("region", { name: "Hermes ecosystem this week" });
     expect((await within(grid).findAllByRole("article")).length).toBeGreaterThan(0);
     expect(within(grid).getByRole("combobox", { name: "Weekly desk" })).toBeInTheDocument();
-    expect(within(grid).getByText(/Published stable releases/)).toBeInTheDocument();
+    expect(within(grid).getByRole("region", { name: "Community builds & reports" })).toBeInTheDocument();
+    expect(within(grid).getByText(/Sample edition · fixture data/)).toBeInTheDocument();
+    expect(within(grid).queryByRole("region", { name: "Shipped this week" })).not.toBeInTheDocument();
   });
 
   it("Built With Hermes shows builds and community stories", async () => {

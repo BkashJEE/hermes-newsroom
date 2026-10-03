@@ -9,9 +9,9 @@ import { timeAgo } from "../model/derive";
 import type { Story, StoryType } from "../model/story";
 import { useNewsroom } from "../state/newsroom-store";
 import { useSectionStories } from "../state/use-section-stories";
-import { Flashcard } from "./flashcard";
+import { Flashcard, OverflowMenu, useStoryMenu } from "./flashcard";
 import { CollectionRecord } from "./collection-record";
-import { DecisionRail } from "./decision-rail";
+import { HermesPanel } from "./hermes-panel";
 import {
   EmptyFeed,
   FeedBanners,
@@ -19,7 +19,6 @@ import {
   NoResults,
   OfflineState,
   ProviderError,
-  RailSkeleton,
   RequestError,
 } from "./status";
 import { MomentumIndicator, RelativeTime, ScoreChip, SourceName, TypeLabel } from "./ui";
@@ -64,8 +63,8 @@ function ViewBar({ selectedCount }: { selectedCount: number }) {
       <details className={styles.scoring}>
         <summary>How this ranking works</summary>
         <p>
-          Selected: {SORT_LABELS[filters.sort]}. This changes the lead, flashcards and list. Equal scores are
-          ordered by newest publication, then story ID.
+          Selected: {SORT_LABELS[filters.sort]}. This changes the lead and four supporting stories. Equal
+          scores are ordered by newest publication, then story ID.
         </p>
         <ul>
           <li>
@@ -119,6 +118,7 @@ function ViewBar({ selectedCount }: { selectedCount: number }) {
 
 function LeadStory({ story }: { story: Story }) {
   const { now, openFile, toggleSave } = useNewsroom();
+  const menu = useStoryMenu(story);
   return (
     <article
       className={styles.lead}
@@ -138,24 +138,27 @@ function LeadStory({ story }: { story: Story }) {
           {story.title}
         </h2>
         <NewsBullets className={styles.leadSummary} text={story.summary} />
-        <div className={styles.chips}>
-          <ScoreChip icon={FileText} value={story.sourceCount} label="Sources" />
-          <ScoreChip icon={BarChart3} value={story.relevanceScore} label="Relevance" />
-          <ScoreChip
-            icon={ShieldCheck}
-            value={story.evidenceMeasured === false ? "Unmeasured" : story.evidenceScore}
-            label="Evidence"
-          />
-          <span className={styles.momentumChip}>
-            <MomentumIndicator momentum={story.momentum} />
-            {story.momentum.measured !== false ? (
-              <span className="visually-hidden">momentum {story.momentum.score}</span>
-            ) : null}
-          </span>
-        </div>
+        <details className={styles.scoring}>
+          <summary>Evidence &amp; ranking</summary>
+          <div className={styles.chips}>
+            <ScoreChip icon={FileText} value={story.sourceCount} label="Sources" />
+            <ScoreChip icon={BarChart3} value={story.relevanceScore} label="Relevance" />
+            <ScoreChip
+              icon={ShieldCheck}
+              value={story.evidenceMeasured === false ? "Unmeasured" : story.evidenceScore}
+              label="Evidence"
+            />
+            <span className={styles.momentumChip}>
+              <MomentumIndicator momentum={story.momentum} />
+              {story.momentum.measured !== false ? (
+                <span className="visually-hidden">momentum {story.momentum.score}</span>
+              ) : null}
+            </span>
+          </div>
+        </details>
         <div className={styles.leadActions}>
           <button type="button" className={styles.primary} onClick={() => openFile(story.id)}>
-            Open Intelligence File <ArrowRight size={18} aria-hidden />
+            Read story &amp; sources <ArrowRight size={18} aria-hidden />
           </button>
           <button
             type="button"
@@ -166,6 +169,7 @@ function LeadStory({ story }: { story: Story }) {
             {story.saved ? <BookmarkCheck size={17} aria-hidden /> : <Bookmark size={17} aria-hidden />}
             {story.saved ? "Saved" : "Save"}
           </button>
+          <OverflowMenu label={`More actions for “${story.title}”`} items={menu} />
         </div>
       </div>
       {story.image ? (
@@ -298,52 +302,87 @@ function FrontPageContent() {
       releases and fixes.
     </p>
   ) : (
-    <Stories stories={headlines} limit={8} />
+    <Stories stories={headlines} />
   );
 
   return (
     <>
       <FeedBanners />
-      {!allFailed && stories.length > 0 ? <ViewBar selectedCount={headlines.length} /> : null}
-      <p>
-        Up to eight headlines.{" "}
-        <Link href="/newsroom/hermes-agent-updates">Official releases &amp; fixes</Link> ·{" "}
-        <Link href="/newsroom/built-with-hermes">Community projects</Link> ·{" "}
-        <Link href="/newsroom/live-wire">All incoming signals</Link>
-      </p>
+      <header className={styles.intro}>
+        <div>
+          <p className={styles.eyebrow}>The public news briefing</p>
+          <h1>Front Page</h1>
+          <p>Up to five events worth reading. Follow each story back to its sources.</p>
+        </div>
+        <Link className={styles.editionLink} href="/newsroom/editions">
+          Read Editions <ArrowRight size={17} aria-hidden />
+        </Link>
+      </header>
+      {!allFailed && stories.length > 0 ? (
+        <details className={styles.selection}>
+          <summary>
+            <span>
+              <strong>{headlines.length}</strong> selected {headlines.length === 1 ? "event" : "events"}
+            </span>
+            <span>Refine selection</span>
+          </summary>
+          <ViewBar selectedCount={headlines.length} />
+        </details>
+      ) : null}
       {body}
-      <CollectionRecord />
+      <nav className={styles.continueReading} aria-label="Keep reading">
+        <Link href="/newsroom/live-wire">
+          <strong>
+            Live Wire <ArrowRight size={16} aria-hidden />
+          </strong>
+          <span>Every incoming signal</span>
+        </Link>
+        <Link href="/newsroom/hermes-agent-updates">
+          <strong>
+            Hermes Agent Updates <ArrowRight size={16} aria-hidden />
+          </strong>
+          <span>Official releases and merged changes</span>
+        </Link>
+        <Link href="/newsroom/trend-radar">
+          <strong>
+            Trend Radar <ArrowRight size={16} aria-hidden />
+          </strong>
+          <span>Topics and coverage across sources</span>
+        </Link>
+      </nav>
+      <details className={styles.collection}>
+        <summary>
+          Collection record <span>See what was kept and excluded</span>
+        </summary>
+        <CollectionRecord />
+      </details>
+      <HermesPanel />
     </>
   );
 }
 
-function Stories({ stories, limit }: { stories: Story[]; limit: number }) {
+function Stories({ stories }: { stories: Story[] }) {
   const lead = stories[0];
-  const cards = stories.slice(1, 4);
+  const cards = stories.slice(1, 5);
   return (
-    <>
+    <div className={styles.briefing} data-single={cards.length === 0 || undefined}>
       {lead ? <LeadStory story={lead} /> : null}
-      <section className={styles.cards} aria-label="Flashcards">
-        {cards.map((story) => (
-          <Flashcard key={story.id} story={story} />
-        ))}
-      </section>
-      <LiveList key={limit} stories={stories} title="Selected headlines" limit={limit} />
-    </>
+      {cards.length ? (
+        <section className={styles.cards} aria-label="More selected events">
+          {cards.map((story) => (
+            <Flashcard key={story.id} story={story} compact />
+          ))}
+        </section>
+      ) : null}
+    </div>
   );
 }
 
-/** Front Page: centre workspace plus the decision rail. */
+/** One short selection, followed by routes into the full reporting. */
 export function FrontPage() {
-  const { feed } = useNewsroom();
   return (
-    <div data-layout="front" className={styles.layout}>
-      <div className={styles.center}>
-        <FrontPageContent />
-      </div>
-      <aside className={styles.rail} aria-label="Decision rail">
-        {feed ? <DecisionRail /> : <RailSkeleton />}
-      </aside>
+    <div data-layout="front" className={styles.center}>
+      <FrontPageContent />
     </div>
   );
 }

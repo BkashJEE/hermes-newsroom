@@ -121,3 +121,78 @@
   padding: 16px;
   border: 1px dashed var(--line);
 }
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 10mm;
+  }
+  :global(body):has(.printEdition),
+  :global(html):has(.printEdition) {
+    background: white !important;
+    color: black !important;
+    color-scheme: light;
+  }
+  :global(body):has(.printEdition) > :not([data-newsroom-shell]),
+  :global([data-newsroom-shell]):has(.printEdition) > :not([data-newsroom-main]),
+  :global([data-newsroom-main]):has(.printEdition) > :not([data-newspaper-section]),
+  :global([data-newspaper-section]):has(.printEdition) > :not(.printEdition) {
+    display: none !important;
+  }
+  :global([data-newsroom-shell]):has(.printEdition),
+  :global([data-newsroom-main]):has(.printEdition),
+  :global([data-newspaper-section]):has(.printEdition),
+  .printEdition {
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .printEdition :global([data-section-toolbar]) {
+    position: static;
+    background: white;
+    color: black;
+  }
+  .printEdition button,
+  .printEdition label,
+  .coverage,
+  .details {
+    display: none;
+  }
+  .printEdition p,
+  .printEdition a,
+  .printEdition h3,
+  .printEdition h4,
+  .printEdition footer,
+  .printEdition li {
+    color: black;
+  }
+  .grid {
+    display: block;
+  }
+  .card {
+    margin-block: 4mm;
+    background: white;
+    border: 1px solid #bbb;
+    break-inside: avoid;
+  }
+  .card h4,
+  .points li {
+    display: block;
+    max-height: none;
+    overflow: visible;
+  }
+  .card h4 a::after {
+    content: attr(href);
+    display: block;
+    margin-top: 2mm;
+    font: 10pt var(--font-ui);
+    overflow-wrap: anywhere;
+  }
+}
+
+.quiet {
+  color: var(--text-3);
+  font-size: 0.9rem;
+  border-top: 1px solid var(--line);
+  padding-top: 1rem;
+}

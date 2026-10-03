@@ -105,11 +105,12 @@ describe("evidence presentation", () => {
       );
       const heading = await screen.findByRole("heading", { level: 2, name: "Social evidence example 0" });
       expect.soft(evidenceChip(heading.closest("article")!)).toHaveTextContent(`${label}Evidence`);
-      const cards = screen.getByRole("region", { name: "Flashcards" });
+      const cards = screen.getByRole("region", { name: "More selected events" });
+      await userEvent.setup().click(within(cards).getByRole("button", { name: "Expand" }));
       const stat = within(cards).getByText("Evidence score").closest("div")!;
       expect.soft(stat.querySelector("dd")).toHaveTextContent(`${label} evid`);
       if (measured === false) expect.soft(stat.querySelector("dd")).not.toHaveTextContent("0");
-      await userEvent.setup().click(screen.getByRole("button", { name: /Open Intelligence File/ }));
+      await userEvent.setup().click(screen.getByRole("button", { name: /Read story & sources/ }));
       const dialog = await screen.findByRole("dialog", { name: "Social evidence example 0" });
       expect(within(dialog).queryByText("Independent sources")).not.toBeInTheDocument();
       expect(within(dialog).getByText("Sources", { exact: true }).parentElement).toHaveTextContent(

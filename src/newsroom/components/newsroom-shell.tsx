@@ -56,8 +56,8 @@ export function NewsroomShell({ children }: { children: ReactNode }) {
       <main data-newsroom-main id="main" className={styles.main}>
         {pathname !== "/newsroom/personal-daily" && (
           <>
-            <BreakingTicker />
-            <HermesPanel />
+            {pathname !== "/newsroom" ? <BreakingTicker /> : null}
+            {pathname !== "/newsroom" ? <HermesPanel /> : null}
           </>
         )}
         {children}

@@ -31,7 +31,12 @@ export function CommandBar() {
   } = useNewsroom();
   const section = usePathname()?.split("/").pop() ?? "front-page";
   const personal = section === "personal-daily";
-  const fixedTime = SECTION_TIME_LABELS[section];
+  const fixedTime =
+    section === "editions"
+      ? filters.range === "week"
+        ? "Past 7 days"
+        : "Today"
+      : SECTION_TIME_LABELS[section];
   const barRef = useRef<HTMLElement>(null);
   const [query, setQuery] = useState(filters.q);
   const [lastUrlQuery, setLastUrlQuery] = useState(filters.q);

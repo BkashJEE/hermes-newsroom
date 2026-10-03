@@ -18,6 +18,16 @@ export function sectionStories(
   filters: NewsroomFilters,
   options: ApplyOptions,
 ): Story[] {
+  // Editions uses the same selection rules as the original external desks.
+  if (section === "editions") {
+    const range = filters.range === "week" ? "week" : "today";
+    return sectionStories(
+      range === "week" ? "weekly-chronicle" : "hermes-daily",
+      stories,
+      { ...filters, range, from: "", to: "" },
+      options,
+    );
+  }
   const scopedFilters = SECTION_TIME_LABELS[section]
     ? { ...filters, range: "custom" as const, from: "", to: "" }
     : filters;

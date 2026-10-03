@@ -96,7 +96,7 @@ export function DailyModal() {
         </ol>
         <footer className={styles.modalFooter}>
           <Link
-            href="/newsroom/hermes-daily"
+            href="/newsroom/editions?range=today"
             className={styles.secondary}
             onClick={() => setDailyOpen(false)}
           >

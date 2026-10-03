@@ -30,25 +30,9 @@ export function isCommunityBuild(story: Story): boolean {
   );
 }
 
-/** A full page. Fewer than this and the front page reads as broken, not quiet. */
-const FRONT_PAGE = 8;
-
-/**
- * Current-events briefing, not a second complete wire. Prefer headlines, then
- * fill the page with merged changes and project activity, because most days the
- * only fresh Hermes material *is* merges and new repos: preferring headlines but
- * refusing to fill left a single release on the page. Inputs have already passed
- * the editorial gate and the user's filters; never widen their time window or
- * relabel a merge/activity item as a release.
- */
+/** A short briefing. Quiet days stay quiet rather than filling with routine activity. */
 export function frontPageSelection(stories: Story[]): Story[] {
-  const headlines = stories.filter(
-    (story) => !isProjectActivity(story) && hermesUpdateKind(story) !== "change",
-  );
-  if (headlines.length >= FRONT_PAGE) return headlines.slice(0, FRONT_PAGE);
-  const fallback = [
-    ...stories.filter((story) => hermesUpdateKind(story) === "change"),
-    ...stories.filter((story) => isProjectActivity(story) && hermesUpdateKind(story) !== "change"),
-  ];
-  return [...headlines, ...fallback.slice(0, FRONT_PAGE - headlines.length)];
+  return stories
+    .filter((story) => !isProjectActivity(story) && hermesUpdateKind(story) !== "change")
+    .slice(0, 5);
 }

@@ -35,11 +35,11 @@ export function SectionNav() {
       <div className={styles.brand}>
         <NewsroomMark />
         <p className={styles.tagline}>
-          Intelligence
+          Public signals.
           <br />
-          connects
+          Reported events.
           <br />
-          opportunity
+          Sources linked.
         </p>
         <button
           type="button"

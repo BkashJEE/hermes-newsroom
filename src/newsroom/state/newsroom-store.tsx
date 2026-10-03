@@ -110,7 +110,15 @@ export function NewsroomProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const pathname = usePathname() ?? "/newsroom";
   const searchParams = useSearchParams();
-  const filters = useMemo(() => parseFilters(new URLSearchParams(searchParams?.toString())), [searchParams]);
+  const filters = useMemo(() => {
+    const parsed = parseFilters(new URLSearchParams(searchParams?.toString()));
+    if (pathname === "/newsroom/editions") {
+      parsed.range = parsed.range === "week" ? "week" : "today";
+      parsed.from = "";
+      parsed.to = "";
+    }
+    return parsed;
+  }, [searchParams, pathname]);
   const scenario = parseScenario(searchParams?.get("scenario"));
 
   const [status, setStatus] = useState<FeedStatus>("loading");
@@ -241,7 +249,14 @@ export function NewsroomProvider({ children }: { children: ReactNode }) {
     [filters, pathname, router, searchParams],
   );
 
-  const clearFilters = useCallback(() => setFilters({ ...DEFAULT_FILTERS }), [setFilters]);
+  const clearFilters = useCallback(
+    () =>
+      setFilters({
+        ...DEFAULT_FILTERS,
+        ...(pathname === "/newsroom/editions" ? { range: filters.range } : {}),
+      }),
+    [setFilters, pathname, filters.range],
+  );
 
   const announce = useCallback((message: string) => setAnnouncement(message), []);
 

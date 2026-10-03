@@ -9,10 +9,12 @@ import { useSectionStories } from "../state/use-section-stories";
 
 export function HermesPanel() {
   const path = usePathname() ?? "/newsroom";
-  return <Panel key={path} path={path} />;
+  const { filters } = useNewsroom();
+  const scope = path === "/newsroom/editions" ? `${path}?range=${filters.range}` : path;
+  return <Panel key={scope} path={path} scope={scope} />;
 }
-function Panel({ path }: { path: string }) {
-  const { announce, feed, scenario } = useNewsroom();
+function Panel({ path, scope }: { path: string; scope: string }) {
+  const { announce, feed, scenario, filters } = useNewsroom();
   const section = path.split("/").pop() ?? "front-page";
   const sectionSelection = useSectionStories(section);
   const availableIds = new Set(feed?.stories.map((story) => story.id));
@@ -22,7 +24,7 @@ function Panel({ path }: { path: string }) {
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-  const key = `newsroom:hermes:${path}`;
+  const key = `newsroom:hermes:${scope}`;
   useEffect(() => {
     let mounted = true;
     if (scenario !== "offline" && navigator.onLine !== false)
@@ -40,11 +42,16 @@ function Panel({ path }: { path: string }) {
       mounted = false;
     };
   }, [key, scenario]);
-  const task = path.endsWith("hermes-daily")
-    ? "daily"
-    : path.endsWith("weekly-chronicle")
-      ? "weekly"
-      : "analyze";
+  const task =
+    section === "editions"
+      ? filters.range === "week"
+        ? "weekly"
+        : "daily"
+      : path.endsWith("hermes-daily")
+        ? "daily"
+        : path.endsWith("weekly-chronicle")
+          ? "weekly"
+          : "analyze";
   async function run() {
     setBusy(true);
     setError("");
@@ -52,7 +59,7 @@ function Panel({ path }: { path: string }) {
       const result = await askHermes(
         task,
         question ||
-          `Review the ${path.split("/").pop()} section. Give a concise ${task === "analyze" ? "evidence-based assessment and next actions" : task + " brief"}.`,
+          `Review the ${path.split("/").pop()} section. Give a concise ${task === "analyze" ? "evidence-based assessment with source links" : task + " brief"}.`,
         selected.map((s) => s.id),
       );
       const output = `${result.composedBy} · ${new Date(result.generatedAt).toLocaleString()} · ${result.feedMode} data\n\n${result.text}`;
@@ -71,14 +78,14 @@ function Panel({ path }: { path: string }) {
         Hermes Agent <span>{status}</span>
       </summary>
       <p>
-        Ask Hermes to review this section, write a brief, or suggest your next steps.{" "}
+        Ask Hermes to review this section or summarize the reported events with source links.{" "}
         {feed?.mode === "fixture"
           ? "The current feed contains example stories."
           : "Uses the current source feed."}
       </p>
       <p>
         Reviews {selected.length} current feed stories from this section (maximum 40).
-        {section === "weekly-chronicle"
+        {task === "weekly"
           ? " Reviews Hermes feed stories only; the separate weekly GitHub activity catalog is not included."
           : ""}
         {section === "built-with-hermes" ? " The separate GitHub project catalog is not included." : ""}
@@ -102,7 +109,7 @@ function Panel({ path }: { path: string }) {
           maxLength={4000}
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
-          placeholder="What matters here, and what should I do next?"
+          placeholder="What happened here, and which sources support it?"
         />
         <button disabled={busy || !feed || selected.length === 0} type="submit">
           {busy ? "Hermes is working…" : task === "analyze" ? "Ask Hermes" : `Write ${task} with Hermes`}
