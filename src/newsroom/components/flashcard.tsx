@@ -108,13 +108,14 @@ interface FlashcardProps {
   story: Story;
   /** Heading level inside the page outline. */
   headingLevel?: 2 | 3;
+  compact?: boolean;
 }
 
 /**
  * Compact intelligence card. The variant comes from the story type and only
  * changes the small label and the edge strip — never the whole card.
  */
-export function Flashcard({ story, headingLevel = 3 }: FlashcardProps) {
+export function Flashcard({ story, headingLevel = 3, compact = false }: FlashcardProps) {
   const { now, toggleSave, openFile, tracked } = useNewsroom();
   const [expanded, setExpanded] = useState(false);
   const menu = useStoryMenu(story);
@@ -122,7 +123,12 @@ export function Flashcard({ story, headingLevel = 3 }: FlashcardProps) {
   const Heading = `h${headingLevel}` as const;
 
   return (
-    <article className={styles.card} data-type={story.type} data-dismissed={story.dismissed || undefined}>
+    <article
+      className={styles.card}
+      data-compact={compact || undefined}
+      data-type={story.type}
+      data-dismissed={story.dismissed || undefined}
+    >
       <header className={styles.top}>
         <TypeLabel type={story.type} />
         <span className={styles.meta}>
@@ -161,42 +167,44 @@ export function Flashcard({ story, headingLevel = 3 }: FlashcardProps) {
         {story.sourceLabel}
       </p>
 
-      <dl className={styles.stats}>
-        <div>
-          <dt>
-            <FileText size={15} aria-hidden />
-            <span className="visually-hidden">Independent sources</span>
-          </dt>
-          <dd>
-            {story.sourceCount} <span className={styles.unit}>sources</span>
-          </dd>
-        </div>
-        <div>
-          <dt>
-            <BarChart3 size={15} aria-hidden />
-            <span className="visually-hidden">Hermes relevance</span>
-          </dt>
-          <dd>
-            {story.relevanceScore} <span className={styles.unit}>rel</span>
-          </dd>
-        </div>
-        <div>
-          <dt>
-            <ShieldCheck size={15} aria-hidden />
-            <span className="visually-hidden">Evidence score</span>
-          </dt>
-          <dd>
-            {story.evidenceMeasured === false ? "Unmeasured" : story.evidenceScore}{" "}
-            <span className={styles.unit}>evid</span>
-          </dd>
-        </div>
-        <div>
-          <dt className="visually-hidden">Momentum</dt>
-          <dd>
-            <MomentumIndicator momentum={story.momentum} />
-          </dd>
-        </div>
-      </dl>
+      {!compact || expanded ? (
+        <dl className={styles.stats}>
+          <div>
+            <dt>
+              <FileText size={15} aria-hidden />
+              <span className="visually-hidden">Independent sources</span>
+            </dt>
+            <dd>
+              {story.sourceCount} <span className={styles.unit}>sources</span>
+            </dd>
+          </div>
+          <div>
+            <dt>
+              <BarChart3 size={15} aria-hidden />
+              <span className="visually-hidden">Hermes relevance</span>
+            </dt>
+            <dd>
+              {story.relevanceScore} <span className={styles.unit}>rel</span>
+            </dd>
+          </div>
+          <div>
+            <dt>
+              <ShieldCheck size={15} aria-hidden />
+              <span className="visually-hidden">Evidence score</span>
+            </dt>
+            <dd>
+              {story.evidenceMeasured === false ? "Unmeasured" : story.evidenceScore}{" "}
+              <span className={styles.unit}>evid</span>
+            </dd>
+          </div>
+          <div>
+            <dt className="visually-hidden">Momentum</dt>
+            <dd>
+              <MomentumIndicator momentum={story.momentum} />
+            </dd>
+          </div>
+        </dl>
+      ) : null}
 
       {expanded ? (
         <div id={bodyId} className={styles.expanded}>
