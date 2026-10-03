@@ -46,3 +46,15 @@ it("gates the API response and reports the new live source families", async () =
   expect(sourceNotConnected("live", "reddit")).toBe(false);
   expect(sourceNotConnected("live", "facebook")).toBe(true);
 });
+
+it("ships the reasoning with the feed, not just a count of what it hid", async () => {
+  const response = await GET(new NextRequest("http://localhost/api/newsroom"));
+  const feed = await response.json();
+  expect(feed.collection).toMatchObject({ collected: 2, kept: 1, excluded: 1 });
+  expect(feed.collection.reasons).toHaveLength(1);
+  const [reason] = feed.collection.reasons;
+  expect(reason.reason).toBe("no-event");
+  expect(reason.rule).toContain("reporting something that occurred");
+  // The excluded item is named and linked, so the decision can be checked.
+  expect(reason.examples[0]).toMatchObject({ id: "synthetic:1", sourceLabel: "Bluesky" });
+});

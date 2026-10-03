@@ -9,6 +9,38 @@ front page, a live wire, daily and weekly editions, and a searchable archive.
 
 It reports. It does not draft posts, queue work, or publish anything.
 
+## How it decides what is news
+
+Most feeds about a project are a search backend with a summarizer bolted on. They
+return **existence** — a repo that exists, a passing mention, a card that says
+"this is not a release" — and you cannot ask them why anything is in front of you.
+
+Newsroom runs a deterministic editorial gate
+([`src/newsroom/model/newsworthy.ts`](src/newsroom/model/newsworthy.ts)) before
+anything is ranked. It keeps signals that **report an event** and excludes the
+rest under four named rules:
+
+| Rule                        | What it excludes                                                                      |
+| --------------------------- | ------------------------------------------------------------------------------------- |
+| **Existence only**          | The source reported that something exists, not that anything happened.                |
+| **No substance**            | A project card carrying a name and a timestamp, with no description to read.          |
+| **No event reported**       | A post asking, planning or describing, rather than reporting something that occurred. |
+| **Over the commentary cap** | More than 25 items from one low-evidence source in an edition. The newest are kept.   |
+
+How much that removes depends on which sources are on and what the week looked
+like; the record on the page always shows the figure for the edition in front of
+you.
+
+**It shows you its working.** The front page carries a collection record: how many
+signals were collected, how many reported an event, and how many were excluded
+under each rule — with the excluded items listed and linked, so you can check a
+decision instead of trusting it. A feed that filters silently is indistinguishable
+from a feed that found nothing, and from a source that quietly broke.
+
+Every rule is a few lines of readable code with the judgement written next to it.
+Nothing is scored by a model. If the gate is wrong about something, you can read
+why, and the fix is a pull request rather than a prompt.
+
 ## What you get
 
 <img src="docs/images/hermes-daily.png" alt="Hermes Daily: a nine-story edition with a printable newspaper view" width="820">
