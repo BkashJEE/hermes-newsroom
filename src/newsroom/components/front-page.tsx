@@ -10,6 +10,7 @@ import type { Story, StoryType } from "../model/story";
 import { useNewsroom } from "../state/newsroom-store";
 import { useSectionStories } from "../state/use-section-stories";
 import { Flashcard } from "./flashcard";
+import { CollectionRecord } from "./collection-record";
 import { DecisionRail } from "./decision-rail";
 import {
   EmptyFeed,
@@ -311,6 +312,7 @@ function FrontPageContent() {
         <Link href="/newsroom/live-wire">All incoming signals</Link>
       </p>
       {body}
+      <CollectionRecord />
     </>
   );
 }

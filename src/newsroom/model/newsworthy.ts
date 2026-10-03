@@ -103,3 +103,80 @@ export function applyEditorialGate(stories: Story[]): GateResult {
   for (const id of overflow) dropped.push({ id, reason: "commentary-cap" });
   return { kept: substantive.filter((s) => !overflow.has(s.id)), dropped };
 }
+
+/**
+ * The collection record.
+ *
+ * An intelligence product owes its reader the reasoning, not just the result:
+ * what was collected, what survived, and what was excluded under which rule.
+ * Without that, a filtered feed is indistinguishable from a feed that found
+ * nothing — and a reader cannot tell a judgement from an outage.
+ *
+ * Every exclusion here is attributable to one deterministic rule, and the rule is
+ * stated in words the reader can check the decision against.
+ */
+export const DROP_RULES: Record<DropReason, { label: string; rule: string }> = {
+  "existence-only": {
+    label: "Existence only",
+    rule: "The source reported that something exists, not that anything happened.",
+  },
+  "no-substance": {
+    label: "No substance",
+    rule: "A project card carrying a name and a timestamp, with no description to read.",
+  },
+  "no-event": {
+    label: "No event reported",
+    rule: "A post asking, planning or describing, rather than reporting something that occurred.",
+  },
+  "commentary-cap": {
+    label: "Over the commentary cap",
+    rule: `More than ${COMMENTARY_CAP} items from one low-evidence source in this edition. The newest are kept.`,
+  },
+};
+
+/** Fixed order, so the record reads the same way every time it is produced. */
+const REASON_ORDER: DropReason[] = ["existence-only", "no-substance", "no-event", "commentary-cap"];
+/** Enough excluded items to audit the rule by, without shipping the whole edition twice. */
+export const EXAMPLE_CAP = 12;
+
+export interface Exclusion {
+  reason: DropReason;
+  label: string;
+  rule: string;
+  count: number;
+  examples: { id: string; title: string; sourceLabel: string; sourceUrl: string }[];
+}
+
+export interface CollectionRecord {
+  /** Signals the providers returned, before any editorial decision. */
+  collected: number;
+  kept: number;
+  excluded: number;
+  reasons: Exclusion[];
+}
+
+/** Pair the gate's decisions back with the stories they were made about. */
+export function collectionRecord(collected: Story[], gate: GateResult): CollectionRecord {
+  const byId = new Map(collected.map((story) => [story.id, story]));
+  const grouped = new Map<DropReason, Exclusion>();
+  for (const { id, reason } of gate.dropped) {
+    const entry = grouped.get(reason) ?? { reason, ...DROP_RULES[reason], count: 0, examples: [] };
+    entry.count += 1;
+    const story = byId.get(id);
+    if (story && entry.examples.length < EXAMPLE_CAP) {
+      entry.examples.push({
+        id: story.id,
+        title: story.title,
+        sourceLabel: story.sourceLabel ?? story.source,
+        sourceUrl: story.sourceUrl,
+      });
+    }
+    grouped.set(reason, entry);
+  }
+  return {
+    collected: collected.length,
+    kept: gate.kept.length,
+    excluded: gate.dropped.length,
+    reasons: REASON_ORDER.filter((reason) => grouped.has(reason)).map((reason) => grouped.get(reason)!),
+  };
+}

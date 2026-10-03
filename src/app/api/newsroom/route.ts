@@ -1,6 +1,6 @@
 import type { NextRequest } from "next/server";
 import { aggregateProviders } from "@/newsroom/providers/aggregate";
-import { applyEditorialGate } from "@/newsroom/model/newsworthy";
+import { applyEditorialGate, collectionRecord } from "@/newsroom/model/newsworthy";
 import { LIVE_SOURCES } from "@/newsroom/model/source-availability";
 import { buildProviders } from "@/newsroom/providers/registry";
 import { parseScenario, scenariosEnabled } from "@/newsroom/providers/scenarios";
@@ -44,9 +44,13 @@ export async function GET(request: NextRequest) {
   // Live search backends also return mere existence (a repo that exists, a passing
   // mention). Development scenarios keep their fixtures exactly as authored.
   let filtered = 0;
+  let collection: ReturnType<typeof collectionRecord> | undefined;
   if (config.liveSources && scenario === "default") {
-    const gate = applyEditorialGate(feed.stories);
+    const collected = feed.stories;
+    const gate = applyEditorialGate(collected);
     filtered = gate.dropped.length;
+    // The reasoning is the product, not a debug detail: keep it, do not count it away.
+    collection = collectionRecord(collected, gate);
     feed.stories = gate.kept;
   }
   if (scenario === "stale") feed.generatedAt = new Date(now.getTime() - STALE_OFFSET).toISOString();
@@ -54,6 +58,7 @@ export async function GET(request: NextRequest) {
     {
       ...feed,
       filteredOut: filtered || undefined,
+      collection,
       connectedSources: config.liveSources
         ? [
             ...LIVE_SOURCES.filter((source) =>

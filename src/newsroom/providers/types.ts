@@ -1,3 +1,4 @@
+import type { CollectionRecord } from "../model/newsworthy";
 import type { SourceId, Story, Watchlist } from "@/newsroom/model/story";
 
 /** What the Newsroom asks every provider for. */
@@ -38,6 +39,8 @@ export interface ProviderStatus {
 
 export interface FeedResult {
   connectedSources?: SourceId[];
+  /** What was collected, what survived the editorial gate, and why the rest did not. */
+  collection?: CollectionRecord;
   personalDaily?: { enabled: boolean; title?: string };
   stories: Story[];
   providers: ProviderStatus[];
