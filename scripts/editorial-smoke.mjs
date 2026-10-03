@@ -1,6 +1,7 @@
 /** Check the Editions migration and five-event briefing against a running demo server. */
 import assert from "node:assert/strict";
 import { mkdir } from "node:fs/promises";
+import { fileURLToPath } from "node:url";
 import { chromium } from "playwright-core";
 
 const base = process.env.BASE_URL ?? "http://127.0.0.1:3510";
@@ -37,7 +38,7 @@ try {
       await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
       `Front page overflows at ${width}`,
     );
-    await page.screenshot({ path: new URL(`front-${width}.png`, out).pathname, fullPage: true });
+    await page.screenshot({ path: fileURLToPath(new URL(`front-${width}.png`, out)), fullPage: true });
   }
   await page.locator("summary").filter({ hasText: "Collection record" }).click();
   assert(await page.getByRole("region", { name: "Collection record" }).isVisible());
@@ -57,7 +58,7 @@ try {
       await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
       `Today overflows at ${width}`,
     );
-    await page.screenshot({ path: new URL(`today-${width}.png`, out).pathname, fullPage: true });
+    await page.screenshot({ path: fileURLToPath(new URL(`today-${width}.png`, out)), fullPage: true });
     await page.getByRole("link", { name: "This week", exact: true }).click();
     await page.getByRole("region", { name: "Hermes ecosystem this week" }).waitFor();
     assert.equal(new URL(page.url()).searchParams.get("range"), "week");
@@ -65,7 +66,7 @@ try {
       await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
       `Week overflows at ${width}`,
     );
-    await page.screenshot({ path: new URL(`week-${width}.png`, out).pathname, fullPage: true });
+    await page.screenshot({ path: fileURLToPath(new URL(`week-${width}.png`, out)), fullPage: true });
     await page.goBack();
     await page.getByRole("button", { name: "Flashcards", exact: true }).waitFor();
     assert.equal(new URL(page.url()).searchParams.get("range"), "today");
@@ -76,7 +77,7 @@ try {
   await page.emulateMedia({ media: "print" });
   assert.equal(await page.getByRole("navigation", { name: "Edition range" }).isVisible(), false);
   assert(await page.getByRole("region", { name: "Hermes ecosystem this week" }).isVisible());
-  await page.pdf({ path: new URL("weekly.pdf", out).pathname, preferCSSPageSize: true });
+  await page.pdf({ path: fileURLToPath(new URL("weekly.pdf", out)), preferCSSPageSize: true });
   await page.emulateMedia({ media: "screen" });
   await page.goto(`${base}/newsroom/editions?range=today`);
   await page.getByRole("button", { name: "Flashcards", exact: true }).waitFor();
@@ -85,7 +86,7 @@ try {
   for (const sheet of await page.getByRole("region", { name: /^Newspaper page/ }).all())
     assert(await sheet.isVisible());
   assert.equal(await page.getByRole("navigation", { name: "Edition range" }).isVisible(), false);
-  await page.pdf({ path: new URL("daily.pdf", out).pathname, preferCSSPageSize: true });
+  await page.pdf({ path: fileURLToPath(new URL("daily.pdf", out)), preferCSSPageSize: true });
   assert.deepEqual(errors, []);
   console.log(
     "Editorial checks passed: legacy redirects, responsive briefing, source drawer, Editions history and both print layouts.",
