@@ -37,19 +37,39 @@ const select = (section: string) =>
   sectionStories(section, [release, merge, project, discussion], DEFAULT_FILTERS, { now: NOW });
 
 describe("distinct newsroom sections", () => {
-  it("keeps a quiet day short even when routine merges and project activity are plentiful", () => {
+  it("prefers real headlines over routine merges and project activity", () => {
     const activity = [
       ...Array.from({ length: 20 }, (_, i) => ({ ...merge, id: `github:change:${i + 100}` })),
       ...Array.from({ length: 26 }, (_, i) => ({ ...project, id: `github:project:${i + 100}` })),
     ];
-    expect(frontPageSelection([release, ...activity])).toEqual([release]);
-    expect(frontPageSelection(activity)).toEqual([]);
+    expect(frontPageSelection([release, ...activity])[0]).toEqual(release);
+  });
+
+  it("reports routine activity rather than an empty page when that is the whole day", () => {
+    // A live GitHub feed is often nothing but merged changes and project cards.
+    // "0 selected events" while 46 things happened is a broken page, not a quiet one.
+    const changes = Array.from({ length: 20 }, (_, i) => ({ ...merge, id: `github:change:${i + 100}` }));
+    const projects = Array.from({ length: 26 }, (_, i) => ({ ...project, id: `github:project:${i + 100}` }));
+    const selected = frontPageSelection([...projects, ...changes]);
+    expect(selected).toHaveLength(5);
+    // Merged changes come first: they are upstream Hermes work, not a search result.
+    expect(selected.every((s) => s.id.startsWith("github:change:"))).toBe(true);
+  });
+
+  it("tops up to five, keeping the headlines it does have at the front", () => {
+    const activity = Array.from({ length: 9 }, (_, i) => ({ ...project, id: `github:project:${i + 100}` }));
+    const selected = frontPageSelection([release, ...activity]);
+    expect(selected).toHaveLength(5);
+    expect(selected[0]).toEqual(release);
+  });
+
+  it("still returns nothing when there is nothing", () => {
+    expect(frontPageSelection([])).toEqual([]);
   });
 
   it("caps the briefing at five ranked events without duplicates or routine filler", () => {
     const headlines = Array.from({ length: 10 }, (_, i) => ({ ...discussion, id: `hn:${i + 100}` }));
     expect(frontPageSelection([project, merge, ...headlines])).toEqual(headlines.slice(0, 5));
-    expect(frontPageSelection([])).toEqual([]);
   });
 
   it("never backfills from outside the user's time, source, search or dismissal filters", () => {
@@ -83,12 +103,12 @@ describe("distinct newsroom sections", () => {
     ).toEqual([merge.id, release.id].sort());
     expect(select("built-with-hermes").map((s) => s.id)).toEqual([project.id]);
     expect(select("live-wire")).toHaveLength(4);
-    // Routine activity stays in its dedicated sections, even on a quiet day.
-    expect(
-      select("front-page")
-        .map((s) => s.id)
-        .sort(),
-    ).toEqual([release.id, discussion.id].sort());
+    // The two real headlines lead. With only four stories in the whole feed there is
+    // nothing held back worth holding back, so the briefing tops up from the rest
+    // rather than reporting less than happened.
+    const front = select("front-page").map((s) => s.id);
+    expect(front.slice(0, 2)).toEqual([release.id, discussion.id]);
+    expect(front.sort()).toEqual([release.id, discussion.id, merge.id, project.id].sort());
   });
   it("does not label a community mention, spoofed host, or unconfirmed pull request as an upstream update", () => {
     expect(hermesUpdateKind({ ...discussion, title: "Hermes Agent official update" })).toBeNull();
