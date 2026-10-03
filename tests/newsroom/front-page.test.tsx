@@ -7,6 +7,8 @@ import { parseScenario } from "@/newsroom/providers/scenarios";
 import { NewsroomProvider } from "@/newsroom/state/newsroom-store";
 import { NewsroomShell } from "@/newsroom/components/newsroom-shell";
 import { FrontPage } from "@/newsroom/components/front-page";
+import { SignalMeter } from "@/newsroom/components/decision-rail";
+import { BreakingTicker } from "@/newsroom/components/breaking-ticker";
 import { FIXTURE_STORIES } from "@/newsroom/fixtures/stories";
 import { currentUrl, setUrl } from "./navigation-mock";
 
@@ -53,40 +55,58 @@ afterEach(() => {
 });
 
 describe("Front Page", () => {
-  it("shows a loading skeleton, then the lead story, flashcards, live list and rail", async () => {
+  it("shows one lead and four unique supporting events without competing frames", async () => {
     renderNewsroom();
     expect(screen.getByLabelText("Loading intelligence")).toHaveAttribute("aria-busy", "true");
     await lead();
-    const cards = screen.getByRole("region", { name: "Flashcards" });
-    expect(within(cards).getAllByRole("article")).toHaveLength(3);
-    expect(screen.getByRole("table")).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "What should I do?" })).toBeInTheDocument();
-    expect(screen.getAllByRole("meter")).toHaveLength(4);
-    expect(screen.getByRole("heading", { name: "Trending Now" })).toBeInTheDocument();
+    const cards = screen.getByRole("region", { name: "More selected events" });
+    expect(within(cards).getAllByRole("article")).toHaveLength(4);
+    expect(screen.getAllByRole("article")).toHaveLength(5);
+    const titles = screen
+      .getAllByRole("article")
+      .map((article) => within(article).getByRole("heading").textContent);
+    expect(new Set(titles).size).toBe(5);
+    expect(screen.queryByRole("table")).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "What should I do?" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("region", { name: "Breaking intelligence" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("meter")).not.toBeInTheDocument();
     expect(screen.getByText("Fixture data")).toBeInTheDocument();
+    const record = screen.getByText("Collection record", { selector: "summary" }).closest("details")!;
+    expect(record).not.toHaveAttribute("open");
+    await userEvent.setup().click(within(record).getByText("Collection record", { selector: "summary" }));
+    expect(record).toHaveAttribute("open");
+    expect(within(record).getByText(/Demo data is shown exactly as authored/)).toBeVisible();
   });
 
   it("meters expose label, number and level, not color alone", async () => {
     renderNewsroom();
     await lead();
-    const meter = screen.getByRole("meter", { name: "Hermes" });
+    render(
+      <NewsroomProvider>
+        <SignalMeter />
+      </NewsroomProvider>,
+    );
+    const meter = await screen.findByRole("meter", { name: "Hermes" });
+    await waitFor(() => expect(meter.getAttribute("aria-valuetext")).toContain("of 100"));
     expect(meter).toHaveAttribute("aria-valuenow");
     expect(meter.getAttribute("aria-valuetext")).toMatch(/^\d+ of 100, (Low|Moderate|High|Very high)$/);
   });
 });
 
 describe("filters", () => {
-  it("the chosen sort changes the selected lead and list together", async () => {
+  it("the chosen sort changes the lead while keeping a five-event selection", async () => {
     const user = userEvent.setup();
     renderNewsroom();
     await lead();
-    for (const value of ["newest", "evidence", "least-covered"]) {
-      await user.selectOptions(screen.getByRole("combobox", { name: "Sort" }), value);
-      const firstRow = within(screen.getByRole("table")).getAllByRole("row")[1];
-      const title = within(firstRow).getAllByRole("button")[0].textContent;
-      expect(document.querySelector("#lead-headline")?.textContent).toBe(title);
-    }
-    expect(within(screen.getByRole("table")).getAllByRole("row").length).toBeLessThanOrEqual(9);
+    await user.click(screen.getByText("Refine selection"));
+    await user.selectOptions(screen.getByRole("combobox", { name: "Sort" }), "newest");
+    await waitFor(() =>
+      expect(document.querySelector("#lead-headline")).not.toHaveTextContent("Agents are rebuilding context"),
+    );
+    expect(currentUrl().searchParams.get("sort")).toBe("newest");
+    await user.selectOptions(screen.getByRole("combobox", { name: "Sort" }), "relevance");
+    await lead();
+    expect(screen.getAllByRole("article")).toHaveLength(5);
   });
   it("explains an unconnected live source and lets readers return to connected sources", async () => {
     const user = userEvent.setup();
@@ -116,7 +136,8 @@ describe("filters", () => {
 
   it("keeps fixture X stories available without a live connection warning", async () => {
     renderNewsroom("/newsroom?source=x");
-    await screen.findByRole("table");
+    await screen.findByRole("heading", { name: /Popular agent memory plugin/ });
+    await userEvent.setup().click(screen.getByText("Refine selection"));
     expect(screen.getByRole("option", { name: "X" })).toBeInTheDocument();
     expect(screen.queryByText("X is not connected.")).not.toBeInTheDocument();
   });
@@ -128,7 +149,7 @@ describe("filters", () => {
     await user.type(screen.getByRole("searchbox", { name: "Search stories" }), "sandbox");
     await waitFor(() => expect(currentUrl().searchParams.get("q")).toBe("sandbox"));
     await screen.findByRole("heading", { level: 2, name: /Sandbox escape fixed/ });
-    expect(screen.getByText(/^1$/, { selector: "strong" })).toBeInTheDocument();
+    expect(screen.getByText("selected event")).toHaveTextContent("1");
   });
 
   it("shows the no-results state and clears filters", async () => {
@@ -146,12 +167,13 @@ describe("filters", () => {
     await lead();
     await user.selectOptions(screen.getByRole("combobox", { name: "Source" }), "github");
     expect(currentUrl().searchParams.get("source")).toBe("github");
-    const rows = () => within(screen.getByRole("table")).getAllByRole("row").slice(1);
+    const rows = () => screen.getAllByRole("article");
     await waitFor(() => rows().forEach((r) => expect(r).toHaveTextContent("GitHub")));
 
     await user.selectOptions(screen.getByRole("combobox", { name: "Time range" }), "week");
     expect(currentUrl().searchParams.get("range")).toBe("week");
 
+    await user.click(screen.getByText("Refine selection"));
     await user.selectOptions(screen.getByRole("combobox", { name: "Type" }), "build");
     expect(currentUrl().searchParams.get("type")).toBe("build");
 
@@ -172,7 +194,8 @@ describe("filters", () => {
 
   it("restores filters from the URL on load", async () => {
     renderNewsroom("/newsroom?source=reddit&sort=evidence");
-    await screen.findByRole("table");
+    await screen.findByRole("heading", { name: /Devs are using local LLMs/ });
+    await userEvent.setup().click(screen.getByText("Refine selection"));
     expect(screen.getByRole("combobox", { name: "Source" })).toHaveValue("reddit");
     expect(screen.getByRole("combobox", { name: "Sort" })).toHaveValue("evidence");
   });
@@ -184,6 +207,7 @@ describe("filters", () => {
     const button = screen.getByRole("button", { name: /Security/, pressed: false });
     await user.click(button);
     expect(currentUrl().searchParams.get("watch")).toBe("security");
+    await user.click(screen.getByText("Refine selection"));
     expect(await screen.findByText(/in Security/)).toBeInTheDocument();
   });
 });
@@ -203,7 +227,7 @@ describe("flashcards and intelligence file", () => {
     const user = userEvent.setup();
     renderNewsroom();
     await lead();
-    await user.click(screen.getByRole("button", { name: /Open Intelligence File/ }));
+    await user.click(screen.getByRole("button", { name: /Read story & sources/ }));
     const dialog = await screen.findByRole("dialog", { name: "Agents are rebuilding context" });
     for (const name of [
       "Full summary",
@@ -221,13 +245,11 @@ describe("flashcards and intelligence file", () => {
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
   });
 
-  it("selecting a live-list row opens that story", async () => {
+  it("selecting a supporting headline opens that story", async () => {
     const user = userEvent.setup();
     renderNewsroom();
     await lead();
-    await user.click(
-      within(screen.getByRole("table")).getByRole("button", { name: "Hermes Toolkit v0.3 released" }),
-    );
+    await user.click(screen.getByRole("button", { name: "Hermes Toolkit v0.3 released" }));
     expect(await screen.findByRole("dialog", { name: "Hermes Toolkit v0.3 released" })).toBeInTheDocument();
   });
 
@@ -241,46 +263,33 @@ describe("flashcards and intelligence file", () => {
   });
 });
 
-describe("What Should I Do?", () => {
-  it("the only story actions are the reading ones, and both show a local result", async () => {
-    const user = userEvent.setup();
+describe("story reading controls", () => {
+  async function menuAction(name: string) {
+    await userEvent.setup().click(screen.getAllByRole("button", { name: /More actions for/ })[0]);
+    await userEvent.setup().click(screen.getByRole("menuitem", { name }));
+  }
+  it("tracks, dismisses and undoes from the story menu", async () => {
     renderNewsroom();
     await lead();
-    const rail = () => screen.getByRole("region", { name: "What should I do?" });
-    const action = (name: RegExp) => within(rail()).getByRole("button", { name });
-
-    // Drafting and work-queue actions were removed: the Newsroom reports, it does not produce.
-    for (const gone of [/^Post/, /^Reply/, /^Test/, /^Build/]) {
-      expect(within(rail()).queryByRole("button", { name: gone })).not.toBeInTheDocument();
-    }
-    expect(screen.queryByText(/Desk queue/)).not.toBeInTheDocument();
-
-    // Track → toggles tracking state
-    await user.click(action(/^Track/));
-    expect(within(rail()).getByRole("button", { name: /^Tracking/, pressed: true })).toBeInTheDocument();
-
-    // Ignore → dismisses with undo
-    await user.click(action(/^Ignore/));
+    await menuAction("Track story");
+    await userEvent.setup().click(screen.getAllByRole("button", { name: /More actions for/ })[0]);
+    expect(screen.getByRole("menuitem", { name: "Stop tracking" })).toBeInTheDocument();
+    await userEvent.setup().click(screen.getByRole("menuitem", { name: "Dismiss story" }));
     expect(await screen.findByRole("button", { name: "Undo" })).toBeInTheDocument();
-    expect(
-      screen.queryByRole("heading", { level: 2, name: "Agents are rebuilding context" }),
-    ).not.toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: "Undo" }));
+    expect(screen.queryByRole("heading", { name: "Agents are rebuilding context" })).not.toBeInTheDocument();
+    await userEvent.setup().click(screen.getByRole("button", { name: "Undo" }));
     await lead();
   });
-
-  it("dismissed stories can be shown and restored", async () => {
+  it("shows and restores dismissed stories without a duplicate table", async () => {
     const user = userEvent.setup();
     renderNewsroom();
     await lead();
-    await user.click(
-      within(screen.getByRole("region", { name: "What should I do?" })).getByRole("button", {
-        name: /^Ignore/,
-      }),
-    );
-    await user.click(await screen.findByRole("button", { name: "Show 1 dismissed" }));
-    await user.click(within(screen.getByRole("table")).getByRole("button", { name: "Restore" }));
-    await waitFor(() => expect(screen.queryByRole("button", { name: /dismissed/ })).not.toBeInTheDocument());
+    await menuAction("Dismiss story");
+    await user.click(screen.getByText("Refine selection"));
+    await user.click(screen.getByRole("button", { name: "Show 1 dismissed" }));
+    await lead();
+    await menuAction("Restore story");
+    expect(screen.queryByRole("button", { name: /Hide 1 dismissed/ })).not.toBeInTheDocument();
   });
 });
 
@@ -299,7 +308,11 @@ describe("Generate Daily", () => {
 describe("ticker", () => {
   it("shows breaking stories, steps manually and can be dismissed", async () => {
     const user = userEvent.setup();
-    renderNewsroom();
+    render(
+      <NewsroomProvider>
+        <BreakingTicker />
+      </NewsroomProvider>,
+    );
     const ticker = await screen.findByRole("region", { name: "Breaking intelligence" });
     const first = within(ticker).getByRole("button", { name: /memory plugin/ });
     expect(first).toBeInTheDocument();
@@ -318,7 +331,11 @@ describe("ticker", () => {
           removeEventListener() {},
         }) as unknown as MediaQueryList,
     );
-    renderNewsroom();
+    render(
+      <NewsroomProvider>
+        <BreakingTicker />
+      </NewsroomProvider>,
+    );
     const ticker = await screen.findByRole("region", { name: "Breaking intelligence" });
     expect(within(ticker).queryByRole("button", { name: /Pause ticker/ })).not.toBeInTheDocument();
     vi.useFakeTimers({ shouldAdvanceTime: true });

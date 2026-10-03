@@ -182,12 +182,23 @@ export function WeeklyChronicleCards({ stories }: { stories: Story[] }) {
     </div>
   );
   return (
-    <section className={styles.section} aria-label="Hermes ecosystem this week">
+    <section className={`${styles.section} ${recap.printEdition}`} aria-label="Hermes ecosystem this week">
       <header className={styles.header} data-section-toolbar>
         <div>
           <h3>Hermes ecosystem this week · {selected.filter((e) => !e.activity).length} recaps</h3>
           <p>What shipped, what changed inside Hermes, and what the community built.</p>
+          <p>
+            {feed?.mode === "fixture"
+              ? "Sample edition · fixture data"
+              : feed?.mode === "mixed"
+                ? "Mixed live and sample data"
+                : "Public news edition"}{" "}
+            · past seven days
+          </p>
         </div>
+        <button type="button" onClick={() => window.print()}>
+          Print / Save PDF
+        </button>
         <label>
           Weekly desk
           <select
@@ -250,22 +261,28 @@ export function WeeklyChronicleCards({ stories }: { stories: Story[] }) {
                 {renderCards(group.rows)}
               </details>
             )
-          : (desk === "all" || group.rows.length > 0) && (
+          : group.rows.length > 0 && (
               <section key={group.id} className={recap.desk} aria-label={group.title}>
                 <h3>
                   {group.title} · {group.rows.length}
                 </h3>
                 <p>{group.note}</p>
-                {group.rows.length ? (
-                  renderCards(group.rows)
-                ) : (
-                  <p className={recap.empty}>
-                    No sourced updates in this category for the selected week and filters.
-                  </p>
-                )}
+                {renderCards(group.rows)}
               </section>
             ),
       )}
+      {desk === "all" &&
+      selected.length > 0 &&
+      desks.some((group) => group.id !== "activity" && group.rows.length === 0) ? (
+        <p className={recap.quiet}>
+          No reports in{" "}
+          {desks
+            .filter((group) => group.id !== "activity" && group.rows.length === 0)
+            .map((group) => group.title)
+            .join(" or ")}{" "}
+          for this week’s filters.
+        </p>
+      ) : null}
       {!loading && selected.length === 0 && <p>No Hermes updates match this week&#39;s filters.</p>}
       {desks.some((group) => group.rows.length > 6) && (
         <div className={styles.header}>

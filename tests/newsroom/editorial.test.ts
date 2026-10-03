@@ -37,72 +37,19 @@ const select = (section: string) =>
   sectionStories(section, [release, merge, project, discussion], DEFAULT_FILTERS, { now: NOW });
 
 describe("distinct newsroom sections", () => {
-  it("selects at least three stories from a realistic 47-item recent feed", () => {
-    // Synthetic provider-shaped mix: one release, twenty merges, twenty-six projects.
-    const fresh = [
-      release,
-      ...Array.from({ length: 20 }, (_, i) => ({
-        ...merge,
-        id: `github:change:${i + 100}`,
-        sourceUrl: `https://github.com/NousResearch/hermes-agent/pull/${i + 100}`,
-      })),
-      ...Array.from({ length: 26 }, (_, i) => ({
-        ...project,
-        id: `github:project:${i + 100}`,
-        sourceUrl: `https://github.com/community/hermes-tool-${i}`,
-      })),
+  it("keeps a quiet day short even when routine merges and project activity are plentiful", () => {
+    const activity = [
+      ...Array.from({ length: 20 }, (_, i) => ({ ...merge, id: `github:change:${i + 100}` })),
+      ...Array.from({ length: 26 }, (_, i) => ({ ...project, id: `github:project:${i + 100}` })),
     ];
-    expect(fresh).toHaveLength(47);
-    const oldDiscussion = {
-      ...discussion,
-      publishedAt: new Date(NOW.getTime() - 3 * 86400000).toISOString(),
-    };
-    const selected = sectionStories(
-      "front-page",
-      [...fresh, oldDiscussion],
-      { ...DEFAULT_FILTERS, range: "24h" },
-      { now: NOW },
-    );
-    expect(selected.length).toBeGreaterThanOrEqual(3);
-    expect(selected.length).toBeLessThanOrEqual(8);
-    expect(selected[0].id).toBe(release.id);
-    expect(selected.slice(1).every((s) => hermesUpdateKind(s) === "change")).toBe(true);
-    expect(selected).not.toContain(oldDiscussion);
-    expect(new Set(selected.map((s) => s.id)).size).toBe(selected.length);
+    expect(frontPageSelection([release, ...activity])).toEqual([release]);
+    expect(frontPageSelection(activity)).toEqual([]);
   });
 
-  it("fills the page to its own cap, so a quiet day is never a near-empty page", () => {
-    // The real failure this guards: one release in the window, everything else a
-    // merge or project card, and the page rendered a single story.
-    const lead = { ...release, id: "github:hermes:99" };
-    const merges = Array.from({ length: 5 }, (_, i) => ({
-      ...merge,
-      id: `github:change:${i + 20}`,
-      sourceUrl: `https://github.com/NousResearch/hermes-agent/pull/${i + 20}`,
-    }));
-    const projects = Array.from({ length: 5 }, (_, i) => ({ ...project, id: `github:project:${i + 30}` }));
-    const selected = frontPageSelection([lead, ...merges, ...projects]);
-    expect(selected.length).toBe(8);
-    expect(selected[0]).toEqual(lead);
-    // Merges are preferred over project activity when filling.
-    expect(selected.filter((s) => s.id.startsWith("github:change:"))).toHaveLength(5);
-    expect(new Set(selected.map((s) => s.id)).size).toBe(selected.length);
-  });
-
-  it("fills a quiet front page from merges before projects without relabeling them", () => {
-    const merge2 = {
-      ...merge,
-      id: "github:change:5",
-      sourceUrl: "https://github.com/NousResearch/hermes-agent/pull/5",
-    };
-    expect(frontPageSelection([project, merge, merge2])).toEqual([merge, merge2, project]);
-    expect(frontPageSelection([project])).toEqual([project]);
-    expect(frontPageSelection([])).toEqual([]);
-  });
-
-  it("keeps activity off a sufficiently populated headline page", () => {
+  it("caps the briefing at five ranked events without duplicates or routine filler", () => {
     const headlines = Array.from({ length: 10 }, (_, i) => ({ ...discussion, id: `hn:${i + 100}` }));
-    expect(frontPageSelection([project, merge, ...headlines])).toEqual(headlines.slice(0, 8));
+    expect(frontPageSelection([project, merge, ...headlines])).toEqual(headlines.slice(0, 5));
+    expect(frontPageSelection([])).toEqual([]);
   });
 
   it("never backfills from outside the user's time, source, search or dismissal filters", () => {
@@ -136,13 +83,12 @@ describe("distinct newsroom sections", () => {
     ).toEqual([merge.id, release.id].sort());
     expect(select("built-with-hermes").map((s) => s.id)).toEqual([project.id]);
     expect(select("live-wire")).toHaveLength(4);
-    // Headlines first, then the page is filled: on a quiet day project activity
-    // appears rather than leaving a near-empty front page.
+    // Routine activity stays in its dedicated sections, even on a quiet day.
     expect(
       select("front-page")
         .map((s) => s.id)
         .sort(),
-    ).toEqual([release.id, discussion.id, merge.id, project.id].sort());
+    ).toEqual([release.id, discussion.id].sort());
   });
   it("does not label a community mention, spoofed host, or unconfirmed pull request as an upstream update", () => {
     expect(hermesUpdateKind({ ...discussion, title: "Hermes Agent official update" })).toBeNull();
@@ -184,7 +130,7 @@ describe("distinct newsroom sections", () => {
     expect(daily.length).toBeLessThanOrEqual(9);
     expect(new Set(daily.map((s) => s.id)).size).toBe(daily.length);
     expect(sectionStories("front-page", stories, DEFAULT_FILTERS, { now: NOW }).length).toBeLessThanOrEqual(
-      8,
+      5,
     );
   });
 });

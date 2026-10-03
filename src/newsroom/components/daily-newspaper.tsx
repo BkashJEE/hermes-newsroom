@@ -9,9 +9,9 @@ import { TIME_RANGE_LABELS } from "../model/filters";
 import { Flashcard } from "./flashcard";
 import styles from "./daily-newspaper.module.css";
 
-export function DailyNewspaper() {
+export function DailyNewspaper({ initialView = "newspaper" }: { initialView?: "cards" | "newspaper" }) {
   const { filtered, feed, filters, openFile, announce } = useNewsroom();
-  const [view, setView] = useState<"cards" | "newspaper">("newspaper");
+  const [view, setView] = useState<"cards" | "newspaper">(initialView);
   const sections = useMemo(() => selectNewspaper(filtered), [filtered]);
   const selected = sections.flatMap((section) => section.stories);
   const cards = selected;

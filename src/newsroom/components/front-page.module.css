@@ -1,8 +1,3 @@
-/* The Front Page wrapper dissolves into the shell grid: centre column + rail. */
-.layout {
-  display: contents;
-}
-
 .center {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -10,21 +5,6 @@
   gap: var(--gap);
   min-width: 0;
   grid-column: 1;
-}
-
-.rail {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  align-content: start;
-  gap: var(--gap);
-  min-width: 0;
-}
-
-@media (min-width: 1200px) {
-  .rail {
-    grid-column: 2;
-    grid-row: 1 / span 2;
-  }
 }
 
 /* view bar */
@@ -416,4 +396,148 @@
 }
 .scoring li {
   margin-block: 6px;
+}
+
+.intro {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding-block: 0.8rem 0.5rem;
+}
+.intro h1 {
+  margin: 0.2rem 0 0.4rem;
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 4vw, 4rem);
+  line-height: 1;
+  text-transform: uppercase;
+}
+.intro p {
+  margin: 0;
+  color: var(--text-2);
+}
+.intro .eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--green);
+}
+.editionLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--green);
+}
+.selection {
+  border-block: 1px solid var(--line);
+  padding-block: 0.8rem;
+}
+.selection > summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  cursor: pointer;
+  color: var(--text-2);
+}
+.selection > summary strong {
+  font-family: var(--font-mono);
+  color: var(--text);
+}
+.selection > summary > :last-child {
+  color: var(--green);
+}
+.selection[open] .viewBar {
+  padding-top: 1rem;
+}
+.briefing {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--gap);
+}
+.briefing .lead {
+  grid-template-columns: minmax(0, 1fr);
+}
+.briefing .leadVisual {
+  min-height: 10rem;
+  border-left: 0;
+  border-top: 1px solid var(--line);
+}
+.briefing .leadHeadline {
+  font-size: clamp(2rem, 2.5vw, 3.3rem);
+  overflow-wrap: anywhere;
+}
+.briefing .leadText {
+  padding: 1.4rem;
+}
+.briefing .chips {
+  padding-top: 0.7rem;
+}
+.cards {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-content: start;
+}
+.continueReading {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-block: 1px solid var(--line);
+}
+.continueReading a {
+  display: grid;
+  gap: 0.4rem;
+  padding: 1.2rem;
+  color: var(--text);
+  text-decoration: none;
+}
+.continueReading a + a {
+  border-left: 1px solid var(--line);
+}
+.continueReading strong {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+.continueReading span {
+  color: var(--text-2);
+  font-size: 0.95rem;
+}
+.continueReading a:hover strong {
+  color: var(--green);
+}
+.collection > summary {
+  cursor: pointer;
+  color: var(--text-2);
+  padding-block: 0.5rem;
+}
+.collection > summary span {
+  margin-left: 0.6rem;
+  color: var(--text-3);
+  font-size: 0.9rem;
+}
+@media (min-width: 1200px) {
+  .briefing:not([data-single]) {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.2fr);
+    align-items: start;
+  }
+}
+@media (max-width: 699px) {
+  .cards,
+  .continueReading {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .continueReading a + a {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+  .collection > summary span {
+    display: block;
+    margin: 0.3rem 0 0 1rem;
+  }
+  .primary {
+    height: auto;
+    min-height: 3rem;
+    padding: 0.6rem 1rem;
+  }
 }

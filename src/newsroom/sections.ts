@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import { Archive, BarChart3, Boxes, CalendarDays, FileText, Home, Radio, GitPullRequest } from "lucide-react";
+import { Archive, BarChart3, Boxes, FileText, Home, Radio, GitPullRequest } from "lucide-react";
 
 export interface NewsroomSection {
   id: string;
@@ -20,7 +20,7 @@ export const NEWSROOM_SECTIONS: NewsroomSection[] = [
     href: NEWSROOM_BASE,
     icon: Home,
     description:
-      "Up to eight headlines. Routine project activity and individual code changes live in their own sections.",
+      "Up to five selected events. Routine project activity and individual code changes live in their own sections.",
     planned: [],
   },
   {
@@ -41,13 +41,13 @@ export const NEWSROOM_SECTIONS: NewsroomSection[] = [
     planned: ["Streaming feed from every connected provider", "Per-source health", "Keyboard triage"],
   },
   {
-    id: "hermes-daily",
-    label: "Hermes Daily",
-    href: `${NEWSROOM_BASE}/hermes-daily`,
+    id: "editions",
+    label: "Editions",
+    href: `${NEWSROOM_BASE}/editions`,
     icon: FileText,
     description:
-      "A short newspaper selection with source links. Up to nine stories across headlines, builds and research, and community news.",
-    planned: ["Scheduled generation", "Editable brief with citations", "Delivery to your Hermes profile"],
+      "Public news around Hermes Agent. Read today’s selection or the week’s recap, with sources and printable editions.",
+    planned: [],
   },
   {
     id: "personal-daily",
@@ -56,15 +56,6 @@ export const NEWSROOM_SECTIONS: NewsroomSection[] = [
     icon: FileText,
     description: "A personal newspaper from your Hermes work records.",
     planned: [],
-  },
-  {
-    id: "weekly-chronicle",
-    label: "Weekly Chronicle",
-    href: `${NEWSROOM_BASE}/weekly-chronicle`,
-    icon: CalendarDays,
-    description:
-      "The week around Hermes Agent: releases, merged changes, and what the community built and shipped.",
-    planned: ["Week-over-week trend changes", "Corrections roundup", "Export to Markdown"],
   },
   {
     id: "built-with-hermes",

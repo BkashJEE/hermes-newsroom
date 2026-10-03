@@ -524,3 +524,33 @@
     font-size: 0.9rem;
   }
 }
+
+.editionRange {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+.editionRange a {
+  padding: 0.65rem 1.1rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  color: var(--text-2);
+  text-decoration: none;
+}
+.editionRange a[aria-current="page"] {
+  background: var(--green);
+  border-color: var(--green);
+  color: var(--green-ink);
+  font-weight: 600;
+}
+.editionRange span {
+  color: var(--text-3);
+  margin-left: 0.5rem;
+  font-size: 0.9rem;
+}
+@media print {
+  .editionRange {
+    display: none;
+  }
+}
