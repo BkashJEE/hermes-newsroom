@@ -3,7 +3,7 @@
  * Shell tokens: charcoal
  * pills with a #63636d hairline and a #19191c purpose-menu panel.
  * Newsroom tokens follow the Hermes Newsroom reference: graphite panels,
- * 4-6 px radii, Hermes green for verified intelligence and primary actions.
+ * 4-6 px radii, Nous blue for actions and light orange for editorial emphasis.
  */
 :root {
   color-scheme: dark;
@@ -22,10 +22,19 @@
   --text-2: #b0b5b9;
   --text-3: #80868b;
 
-  /* semantic accents */
-  --green: #76b900;
-  --green-strong: #8fd61a;
-  --green-ink: #0b1400;
+  /* Studio-inspired interaction palette; separate from signal status. */
+  --accent: #8b9dff;
+  --action: #0000f2;
+  --action-hover: #2929ff;
+  --action-ink: #ffffff;
+  --accent-strong: #85beff;
+  --accent-ink: #071525;
+  --editorial: #ffbd85;
+
+  /* Legacy green names now use blue; status labels retain their meaning. */
+  --green: var(--accent);
+  --green-strong: var(--accent-strong);
+  --green-ink: #071525;
   --amber: #f2a93b;
   --cyan: #2cc6e0;
   --purple: #a07bff;
@@ -45,7 +54,7 @@
   --radius: 6px;
   --gap: 16px;
   --margin: 24px;
-  --focus: 0 0 0 2px var(--bg), 0 0 0 4px var(--green);
+  --focus: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent);
 
   /* type */
   --font-ui: "Barlow", "Google Sans Text", system-ui, sans-serif;

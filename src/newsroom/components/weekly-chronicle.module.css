@@ -83,7 +83,7 @@
 }
 .points li::before {
   content: "• ";
-  color: var(--green);
+  color: var(--accent);
 }
 .card footer {
   display: flex;
@@ -98,7 +98,7 @@
   font-size: 14px;
 }
 .details summary {
-  color: var(--green);
+  color: var(--accent);
 }
 .details > div {
   margin-top: 14px;

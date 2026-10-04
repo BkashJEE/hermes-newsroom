@@ -25,8 +25,8 @@ const COLOUR_TOKENS: Record<string, readonly string[]> = {
   text: ["--text"],
   text2: ["--text-2"],
   text3: ["--text-3"],
-  accent: ["--green", "--shell-accent"],
-  accentStrong: ["--green-strong"],
+  accent: ["--accent", "--shell-accent"],
+  accentStrong: ["--accent-strong"],
   shellBar: ["--shell-bar"],
   shellPill: ["--shell-pill"],
   // Signal-type colours: categorical, so they keep their own identity but follow

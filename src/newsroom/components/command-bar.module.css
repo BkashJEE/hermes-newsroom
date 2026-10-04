@@ -58,7 +58,7 @@
 }
 
 .titleAccent {
-  color: var(--green);
+  color: var(--accent);
 }
 
 .brandIcon {
@@ -66,7 +66,7 @@
   width: 0.85em;
   height: 0.85em;
   margin-right: 0.3em;
-  color: var(--green);
+  color: var(--accent);
   vertical-align: -0.05em;
 }
 
@@ -113,7 +113,7 @@
   height: 0.55rem;
   border-radius: 50%;
   background: var(--green);
-  box-shadow: 0 0 0 3px rgb(118 185 0 / 0.18);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
 }
 
 .resumeIcon {
@@ -174,7 +174,7 @@
 }
 
 .search input:focus-visible {
-  border-color: var(--green);
+  border-color: var(--accent);
 }
 
 .kbd {
@@ -256,8 +256,8 @@
   padding: 0 1.4rem;
   border: 0;
   border-radius: var(--radius-sm);
-  background: var(--green);
-  color: var(--green-ink);
+  background: var(--action);
+  color: var(--action-ink);
   font-family: var(--font-display);
   font-size: 1.15rem;
   font-weight: 700;
@@ -268,7 +268,7 @@
 }
 
 .generate:hover {
-  background: var(--green-strong);
+  background: var(--action-hover);
 }
 
 /* Below 1600px: status + actions on the first row, search and filters on the second. */

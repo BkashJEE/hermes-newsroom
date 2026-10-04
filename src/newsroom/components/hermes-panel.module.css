@@ -1,20 +1,20 @@
 .panel {
   margin: 0 0 16px;
-  border: 1px solid #343b32;
+  border: 1px solid var(--line-strong);
   border-radius: 4px;
-  background: #131714;
+  background: var(--panel);
   padding: 12px 16px;
-  color: #d7ddd5;
+  color: var(--text);
 }
 .panel summary {
   cursor: pointer;
   font-weight: 700;
-  color: #a3d527;
+  color: var(--accent);
 }
 .panel summary span {
   margin-left: 16px;
   font-size: 12px;
-  color: #9ba493;
+  color: var(--text-2);
   font-weight: 400;
 }
 .panel p {
@@ -29,16 +29,16 @@
   width: 100%;
   resize: vertical;
   color: inherit;
-  background: #0d110d;
-  border: 1px solid #454f42;
+  background: var(--bg);
+  border: 1px solid var(--line-strong);
   padding: 10px;
 }
 .panel button {
   width: fit-content;
   padding: 8px 14px;
-  border: 1px solid #657d32;
-  background: #263418;
-  color: #d4f78e;
+  border: 1px solid var(--accent);
+  background: var(--action);
+  color: var(--action-ink);
   cursor: pointer;
 }
 .panel button:disabled {
