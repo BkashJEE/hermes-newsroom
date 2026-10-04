@@ -22,10 +22,11 @@ describe("embedded host theme", () => {
     );
     expect(applied).toEqual(expect.arrayContaining(["bg", "panel", "accent", "text", "fontUi"]));
     expect(element.style.getPropertyValue("--bg")).toBe("rgb(10, 11, 12)");
-    expect(element.style.getPropertyValue("--green")).toBe("rgb(0, 83, 253)");
+    expect(element.style.getPropertyValue("--accent")).toBe("rgb(0, 83, 253)");
     expect(element.style.getPropertyValue("--shell-accent")).toBe("rgb(0, 83, 253)");
     expect(element.style.getPropertyValue("--font-ui")).toContain("Source Sans 3");
     expect(element.dataset.hostTheme).toBe("on");
+    expect(element.style.getPropertyValue("--green")).toBe("");
   });
 
   it("rejects anything that is not a plain colour or font stack", () => {

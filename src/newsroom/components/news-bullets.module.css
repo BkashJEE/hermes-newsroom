@@ -10,5 +10,5 @@
   margin-top: 0.5rem;
 }
 .list li::marker {
-  color: var(--green);
+  color: var(--editorial);
 }

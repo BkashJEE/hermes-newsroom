@@ -57,7 +57,7 @@
   padding: 0.3rem 0.4rem;
   border: 0;
   background: none;
-  color: var(--green);
+  color: var(--accent);
   font-weight: 600;
   cursor: pointer;
 }
@@ -131,7 +131,7 @@
   display: inline-flex;
   align-items: center;
   padding: 0.35rem 0.8rem;
-  border: 1px solid rgb(118 185 0 / 0.5);
+  border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent);
   border-radius: 999px;
   font-size: 0.95rem;
 }
@@ -151,8 +151,8 @@
   padding: 0 1.5rem;
   border: 0;
   border-radius: var(--radius-sm);
-  background: var(--green);
-  color: var(--green-ink);
+  background: var(--action);
+  color: var(--action-ink);
   font-family: var(--font-display);
   font-size: 1.2rem;
   font-weight: 700;
@@ -162,7 +162,7 @@
 }
 
 .primary:hover {
-  background: var(--green-strong);
+  background: var(--action-hover);
 }
 
 .secondary {
@@ -179,8 +179,8 @@
 }
 
 .secondary[aria-pressed="true"] {
-  border-color: rgb(118 185 0 / 0.6);
-  color: var(--green);
+  border-color: color-mix(in srgb, var(--accent) 60%, transparent);
+  color: var(--accent);
 }
 
 .leadVisual {
@@ -200,7 +200,7 @@
   background:
     linear-gradient(transparent 95%, rgb(255 255 255 / 0.04) 95%) 0 0 / 100% 28px,
     linear-gradient(90deg, transparent 95%, rgb(255 255 255 / 0.04) 95%) 0 0 / 28px 100%,
-    radial-gradient(circle at 60% 50%, rgb(118 185 0 / 0.16), transparent 60%);
+    radial-gradient(circle at 60% 50%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 60%);
 }
 
 /* flashcards */
@@ -257,7 +257,7 @@
   width: 0.5rem;
   height: 0.5rem;
   border-radius: 50%;
-  background: var(--green);
+  background: var(--accent);
 }
 
 .tableWrap {
@@ -332,7 +332,7 @@
 }
 
 .rowFlag {
-  color: var(--green);
+  color: var(--accent);
   font-family: var(--font-mono);
   font-size: 0.75rem;
   text-transform: uppercase;
@@ -422,13 +422,13 @@
   font-size: 0.75rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--green);
+  color: var(--editorial);
 }
 .editionLink {
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
-  color: var(--green);
+  color: var(--accent);
 }
 .selection {
   border-block: 1px solid var(--line);
@@ -446,7 +446,7 @@
   color: var(--text);
 }
 .selection > summary > :last-child {
-  color: var(--green);
+  color: var(--accent);
 }
 .selection[open] .viewBar {
   padding-top: 1rem;
@@ -504,7 +504,7 @@
   font-size: 0.95rem;
 }
 .continueReading a:hover strong {
-  color: var(--green);
+  color: var(--accent);
 }
 .collection > summary {
   cursor: pointer;

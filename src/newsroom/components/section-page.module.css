@@ -25,7 +25,7 @@
   height: 3.2rem;
   border: 1px solid var(--line-strong);
   border-radius: var(--radius);
-  color: var(--green);
+  color: var(--accent);
 }
 
 .headText {
@@ -106,7 +106,7 @@
 }
 
 .empty a {
-  color: var(--green);
+  color: var(--accent);
 }
 
 .split {
@@ -248,8 +248,8 @@
   padding: 0 1.1rem;
   border: 0;
   border-radius: var(--radius-sm);
-  background: var(--green);
-  color: var(--green-ink);
+  background: var(--action);
+  color: var(--action-ink);
   font-weight: 700;
   cursor: pointer;
 }
@@ -339,7 +339,7 @@
 .radarFill {
   position: absolute;
   inset: 0 auto 0 0;
-  background: var(--green);
+  background: var(--accent);
 }
 
 .radarValue {
@@ -348,7 +348,7 @@
 }
 
 .radarChange {
-  color: var(--green);
+  color: var(--accent);
   font-family: var(--font-mono);
   font-size: 0.9rem;
   text-align: right;
@@ -385,7 +385,7 @@
 .deskIcon {
   flex: none;
   margin-top: 0.2rem;
-  color: var(--green);
+  color: var(--accent);
 }
 
 .deskText {
@@ -539,9 +539,9 @@
   text-decoration: none;
 }
 .editionRange a[aria-current="page"] {
-  background: var(--green);
-  border-color: var(--green);
-  color: var(--green-ink);
+  background: var(--action);
+  border-color: var(--accent);
+  color: var(--action-ink);
   font-weight: 600;
 }
 .editionRange span {

@@ -11,9 +11,9 @@
   border-color: var(--line-strong);
 }
 .viewSwitch button[aria-pressed="true"] {
-  background: var(--green);
-  color: var(--green-ink);
-  border-color: var(--green);
+  background: var(--action);
+  color: var(--action-ink);
+  border-color: var(--accent);
 }
 .cardGrid {
   display: grid;
