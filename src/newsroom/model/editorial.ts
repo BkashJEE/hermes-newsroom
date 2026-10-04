@@ -30,9 +30,28 @@ export function isCommunityBuild(story: Story): boolean {
   );
 }
 
-/** A short briefing. Quiet days stay quiet rather than filling with routine activity. */
+const BRIEFING = 5;
+
+/**
+ * A short briefing: the five events worth reading.
+ *
+ * Routine project activity and individual merged changes are held back, because a
+ * briefing padded with them is not a briefing. But holding them back cannot mean
+ * showing nothing: on a live GitHub feed those two kinds are often the *whole*
+ * day's collection, and a page reading "0 selected events" while 45 things
+ * happened is a broken page, not a quiet one.
+ *
+ * So they are a fallback rather than an exclusion — merged changes first, since
+ * they are upstream Hermes work, then project activity.
+ */
 export function frontPageSelection(stories: Story[]): Story[] {
-  return stories
-    .filter((story) => !isProjectActivity(story) && hermesUpdateKind(story) !== "change")
-    .slice(0, 5);
+  const headlines = stories.filter(
+    (story) => !isProjectActivity(story) && hermesUpdateKind(story) !== "change",
+  );
+  if (headlines.length >= BRIEFING) return headlines.slice(0, BRIEFING);
+  const fallback = [
+    ...stories.filter((story) => hermesUpdateKind(story) === "change"),
+    ...stories.filter((story) => isProjectActivity(story) && hermesUpdateKind(story) !== "change"),
+  ];
+  return [...headlines, ...fallback.slice(0, BRIEFING - headlines.length)];
 }
