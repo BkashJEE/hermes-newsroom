@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { JevLiveDesk } from "./jev-live-desk";
 import { CommunityBuilds } from "./community-builds";
+import { ArchiveControls } from "./archive-controls";
 import { CollectionRecord } from "./collection-record";
 import { WeeklyChronicleCards } from "./weekly-chronicle";
 import { DailyNewspaper } from "./daily-newspaper";
@@ -284,7 +285,7 @@ function TrendRadar() {
 }
 
 function Archive() {
-  const { restore } = useNewsroom();
+  const { restore, archive } = useNewsroom();
   const stories = useSectionStories("archive");
   const saved = sortStories(
     stories.filter((s) => s.saved),
@@ -296,15 +297,30 @@ function Archive() {
   );
   return (
     <>
+      <ArchiveControls />
       <Panel
         title={`Saved · ${saved.length}`}
-        note="Kept on this device across all retained dates. Search, source and watchlist filters apply."
+        note="New bookmarks are saved permanently on this computer. Import older browser saves above. Search, source and watchlist filters apply."
       >
         {saved.length ? (
           <div className={styles.cards}>
-            {saved.map((s) => (
-              <Flashcard key={s.id} story={s} />
-            ))}
+            {saved.map((s) => {
+              const record = archive.records.find((r) => r.story.id === s.id);
+              return (
+                <div key={s.id} className={styles.savedCard}>
+                  <p className={styles.panelNote}>
+                    {record
+                      ? record.mode === "fixture"
+                        ? "Demo snapshot"
+                        : record.mode === "mixed"
+                          ? "Mixed / origin unconfirmed"
+                          : "Live source snapshot"
+                      : "Browser-only save · import above"}
+                  </p>
+                  <Flashcard story={s} />
+                </div>
+              );
+            })}
           </div>
         ) : (
           <Empty>No saved stories yet. Use the bookmark on any card or story.</Empty>
@@ -379,7 +395,9 @@ export function SectionPage({ sectionId }: { sectionId: string }) {
       </header>
 
       {sectionId === "editions" ? <EditionRange /> : null}
-      {!feed ? (
+      {sectionId === "archive" ? (
+        <Archive />
+      ) : !feed ? (
         status === "loading" ? (
           <FrontPageSkeleton />
         ) : status === "offline" ? (

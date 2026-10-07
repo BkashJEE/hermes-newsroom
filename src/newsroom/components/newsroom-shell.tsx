@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { useNewsroom } from "../state/newsroom-store";
@@ -14,7 +15,7 @@ import styles from "./newsroom-shell.module.css";
 
 /** Persistent Newsroom frame: command bar, section nav, ticker, dialogs. */
 export function NewsroomShell({ children }: { children: ReactNode }) {
-  const { announcement, navOpen, setNavOpen, navMode } = useNewsroom();
+  const { archiveError, archiveSaving, announcement, navOpen, setNavOpen, navMode } = useNewsroom();
   const pathname = usePathname();
 
   // Close the small-screen nav drawer after navigating.
@@ -54,11 +55,17 @@ export function NewsroomShell({ children }: { children: ReactNode }) {
         onClick={() => setNavOpen(false)}
       />
       <main data-newsroom-main id="main" className={styles.main}>
-        {pathname !== "/newsroom/personal-daily" && (
+        {pathname !== "/newsroom/personal-daily" && pathname !== "/newsroom/archive" && (
           <>
             {pathname !== "/newsroom" ? <BreakingTicker /> : null}
             {pathname !== "/newsroom" ? <HermesPanel /> : null}
           </>
+        )}
+        {archiveSaving && <p role="status">Saving to the permanent archive…</p>}
+        {archiveError && pathname !== "/newsroom/archive" && (
+          <p role="alert">
+            {archiveError} <Link href="/newsroom/archive">Open Archive to retry</Link>
+          </p>
         )}
         {children}
       </main>

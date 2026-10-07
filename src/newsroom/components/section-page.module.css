@@ -554,3 +554,14 @@
     display: none;
   }
 }
+
+.savedCard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-width: 0;
+}
+.savedCard > article {
+  height: auto;
+  flex: 1;
+}

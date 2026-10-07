@@ -22,7 +22,8 @@ import type { Story } from "../model/story";
 import type { FeedResult } from "../providers/types";
 import { parseScenario, type Scenario } from "../providers/scenarios";
 import { readJSON, writeJSON } from "./storage";
-import { localBridge } from "../hermes/bridge";
+import { archiveRequest, readArchive } from "../archive/client";
+import { emptyArchive, type ArchiveData } from "../archive/model";
 
 export const STALE_AFTER_MS = 15 * 60_000;
 const LIVE_REFRESH_MS = 60_000;
@@ -79,6 +80,11 @@ export interface NewsroomStore {
   undoDismiss: () => void;
   announcement: string;
   announce: (message: string) => void;
+  archive: ArchiveData;
+  archiveError: string;
+  archiveReady: boolean;
+  archiveSaving: boolean;
+  reloadArchive: () => Promise<void>;
   // ui
   focusId: string | null;
   setFocusId: (id: string | null) => void;
@@ -138,6 +144,11 @@ export function NewsroomProvider({ children }: { children: ReactNode }) {
   const [dailyOpen, setDailyOpen] = useState(false);
   const [navOpen, setNavOpen] = useState(false);
   const [navMode, setNavMode] = useState<"auto" | "collapsed" | "expanded">("auto");
+  const [archive, setArchive] = useState<ArchiveData>(emptyArchive);
+  const [archiveError, setArchiveError] = useState("");
+  const [archiveReady, setArchiveReady] = useState(false);
+  const [archiveSaving, setArchiveSaving] = useState(false);
+  const archiveQueue = useRef(Promise.resolve());
   const inflight = useRef<AbortController | null>(null);
 
   // Load per-viewer overlays after mount (storage is browser-only and optional).
@@ -151,6 +162,39 @@ export function NewsroomProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (overlaysLoaded) writeJSON(OVERLAY_KEY, overlays);
   }, [overlays, overlaysLoaded]);
+
+  const reloadArchive = useCallback(async () => {
+    try {
+      const data = await readArchive();
+      setArchive(data);
+      setOverlays((o) => {
+        const ids = new Set(data.records.map((r) => r.story.id));
+        return {
+          ...o,
+          saved: [
+            ...o.saved.filter((id) => !ids.has(id)),
+            ...data.records.filter((r) => r.saved).map((r) => r.story.id),
+          ],
+          unsaved: [
+            ...o.unsaved.filter((id) => !ids.has(id)),
+            ...data.records.filter((r) => !r.saved).map((r) => r.story.id),
+          ],
+          snapshots: {
+            ...o.snapshots,
+            ...Object.fromEntries(data.records.map((r) => [r.story.id, r.story])),
+          },
+        };
+      });
+      setArchiveError("");
+      setArchiveReady(true);
+    } catch (cause) {
+      setArchiveError(cause instanceof Error ? cause.message : "Permanent archive unavailable.");
+    }
+  }, []);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- hydrate from the external archive service
+    void reloadArchive();
+  }, [reloadArchive]);
 
   const load = useCallback(async () => {
     inflight.current?.abort();
@@ -221,13 +265,17 @@ export function NewsroomProvider({ children }: { children: ReactNode }) {
       (s) =>
         overlays.saved.includes(s.id) || overlays.dismissed.includes(s.id) || overlays.tracked.includes(s.id),
     );
-    const merged = new Map([...retained, ...(feed?.stories ?? [])].map((s) => [s.id, s]));
+    const candidates =
+      pathname === "/newsroom/archive"
+        ? [...(feed?.stories ?? []), ...retained]
+        : [...retained, ...(feed?.stories ?? [])];
+    const merged = new Map(candidates.map((s) => [s.id, s]));
     return [...merged.values()].map((s) => ({
       ...s,
       saved: !overlays.unsaved.includes(s.id) && (saved.has(s.id) || s.saved),
       dismissed: dismissed.has(s.id),
     }));
-  }, [feed, overlays]);
+  }, [feed, overlays, pathname]);
 
   const filtered = useMemo(
     () =>
@@ -265,16 +313,36 @@ export function NewsroomProvider({ children }: { children: ReactNode }) {
   const toggleSave = useCallback(
     (id: string) => {
       const story = stories.find((s) => s.id === id);
-      const saving = !story?.saved;
-      setOverlays((o) => ({
-        ...o,
-        saved: saving ? [...new Set([...o.saved, id])] : o.saved.filter((x) => x !== id),
-        unsaved: saving ? o.unsaved.filter((x) => x !== id) : [...new Set([...o.unsaved, id])],
-        snapshots: story ? { ...o.snapshots, [id]: story } : o.snapshots,
-      }));
-      announce(saving ? `Saved: ${title(id)}` : `Removed from saved: ${title(id)}`);
+      if (!story) return;
+      if (!archiveReady) {
+        announce("Permanent archive unavailable. Retry from Archive before saving.");
+        return;
+      }
+      const saving = !story.saved;
+      setArchiveSaving(true);
+      archiveQueue.current = archiveQueue.current.then(async () => {
+        try {
+          await archiveRequest({ action: "story", story, saved: saving, mode: feed?.mode ?? "fixture" });
+          setOverlays((o) => ({
+            ...o,
+            saved: saving ? [...new Set([...o.saved, id])] : o.saved.filter((x) => x !== id),
+            unsaved: saving ? o.unsaved.filter((x) => x !== id) : [...new Set([...o.unsaved, id])],
+            snapshots: { ...o.snapshots, [id]: story },
+          }));
+          await reloadArchive();
+          announce(saving ? `Saved permanently: ${story.title}` : `Removed from saved: ${story.title}`);
+        } catch (cause) {
+          const message = cause instanceof Error ? cause.message : "Permanent save failed.";
+          setArchiveError(message);
+          announce(message);
+        }
+      });
+      const pending = archiveQueue.current;
+      void pending.finally(() => {
+        if (archiveQueue.current === pending) setArchiveSaving(false);
+      });
     },
-    [announce, stories, title],
+    [announce, stories, archiveReady, feed, reloadArchive],
   );
 
   const toggleTrack = useCallback(
@@ -322,6 +390,11 @@ export function NewsroomProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<NewsroomStore>(
     () => ({
+      archive,
+      archiveError,
+      archiveReady,
+      archiveSaving,
+      reloadArchive,
       status,
       feed,
       error,
@@ -363,6 +436,11 @@ export function NewsroomProvider({ children }: { children: ReactNode }) {
       setNavMode,
     }),
     [
+      archive,
+      archiveError,
+      archiveReady,
+      archiveSaving,
+      reloadArchive,
       status,
       feed,
       error,

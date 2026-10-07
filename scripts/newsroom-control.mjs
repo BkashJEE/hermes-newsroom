@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import { homedir } from "node:os";
 import { join } from "node:path";
 import { execFileSync } from "node:child_process";
+import { changeBookmark } from "./newsroom-archive-client.mjs";
 import { chromium } from "playwright-core";
 const base = "http://127.0.0.1:3520";
 const routes = {
@@ -90,6 +91,10 @@ try {
       date: result.edition.snapshot.date,
       title: result.edition.title,
     });
+  } else if (action === "archive") {
+    out(await get("/api/newsroom/archive"));
+  } else if (action === "save" || action === "unsave") {
+    out(await changeBookmark(base, action, arg));
   } else if (action === "stories") {
     const feed = await get("/api/newsroom");
     out(feed.stories.filter((s) => !arg || JSON.stringify(s).toLowerCase().includes(arg.toLowerCase())));
@@ -116,17 +121,7 @@ try {
       ),
     );
   } else if (
-    [
-      "save",
-      "unsave",
-      "dismiss",
-      "restore",
-      "track",
-      "untrack",
-      "desk-add",
-      "desk-edit",
-      "desk-remove",
-    ].includes(action)
+    ["dismiss", "restore", "track", "untrack", "desk-add", "desk-edit", "desk-remove"].includes(action)
   ) {
     const feed = await get("/api/newsroom");
     const story = feed.stories.find((s) => s.id === arg);
@@ -204,7 +199,7 @@ try {
     out(result);
   } else
     throw new Error(
-      "Commands: status, stories [search], state, open SECTION, save/unsave/dismiss/restore/track/untrack STORY_ID, desk-add STORY_ID TEXT, desk-edit DESK_ID TEXT, desk-remove DESK_ID, ask QUESTION",
+      "Commands: status, stories [search], archive, state, open SECTION, save/unsave/dismiss/restore/track/untrack STORY_ID, desk-add STORY_ID TEXT, desk-edit DESK_ID TEXT, desk-remove DESK_ID, ask QUESTION",
     );
 } catch (error) {
   console.error(error.message);
