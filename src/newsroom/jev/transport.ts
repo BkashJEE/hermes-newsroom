@@ -22,9 +22,18 @@ export const DIRECT_MODEL = "jev-latest";
 export const DIRECT_KEY = "TYPESAFE_API_KEY";
 export const GATEWAY_KEY = "AI_GATEWAY_API_KEY";
 
-/** Which transport this process should use, given what is configured. */
-export function chooseTransport(env: Record<string, string | undefined>): TransportId | null {
-  if (env[DIRECT_KEY]?.trim()) return "direct";
+/**
+ * Which transport this process should use, given what is configured.
+ *
+ * `directKey` is the key actually resolved for this request — from the app's own
+ * store or the environment — so a key saved through the settings screen counts
+ * the same as one exported before the server started.
+ */
+export function chooseTransport(
+  env: Record<string, string | undefined>,
+  directKey: string | null = null,
+): TransportId | null {
+  if (directKey?.trim() || env[DIRECT_KEY]?.trim()) return "direct";
   if (env[GATEWAY_KEY]?.trim()) return "gateway";
   return null;
 }
@@ -55,9 +64,9 @@ export function failureForStatus(status: number | undefined): JevFailureCode {
 export async function postDirect(
   request: object,
   signal: AbortSignal,
-  env: Record<string, string | undefined> = process.env,
+  directKey: string | null | undefined,
 ): Promise<unknown> {
-  const key = env[DIRECT_KEY]?.trim();
+  const key = directKey?.trim();
   if (!key) throw new JevFailure("authentication");
   let response: Response;
   try {
