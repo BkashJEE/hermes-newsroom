@@ -176,8 +176,8 @@
   padding: 0.35rem 0.8rem;
   border: 0;
   border-radius: var(--radius-sm);
-  background: var(--green);
-  color: var(--green-ink);
+  background: var(--action);
+  color: var(--action-ink);
   font-weight: 700;
   cursor: pointer;
 }

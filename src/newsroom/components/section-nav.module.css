@@ -82,13 +82,13 @@
 }
 
 .link[aria-current="page"] {
-  background: rgb(118 185 0 / 0.12);
-  color: var(--green);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  color: var(--accent);
   font-weight: 600;
 }
 
 .link[aria-current="page"] svg {
-  color: var(--green);
+  color: var(--accent);
 }
 
 .link[aria-current="page"]::before {
@@ -99,7 +99,7 @@
   left: 0;
   width: 3px;
   border-radius: 2px;
-  background: var(--green);
+  background: var(--accent);
 }
 
 .watchlists {
@@ -142,11 +142,11 @@
 }
 
 .watch[aria-pressed="true"] {
-  background: rgb(118 185 0 / 0.12);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
 }
 
 .watch[aria-pressed="true"] svg {
-  color: var(--green);
+  color: var(--accent);
 }
 
 .count {

@@ -52,7 +52,7 @@
 }
 
 .card:hover {
-  border-color: var(--line-strong);
+  border-color: var(--accent);
 }
 
 .card[data-dismissed] {
@@ -240,7 +240,7 @@
   padding: 0;
   border: 0;
   background: none;
-  color: var(--green);
+  color: var(--accent);
   font-weight: 600;
   cursor: pointer;
 }
@@ -271,7 +271,7 @@
 }
 
 .iconButton[aria-pressed="true"] {
-  color: var(--green);
+  color: var(--accent);
 }
 
 .expand {
@@ -327,7 +327,7 @@
 
 .menuItem:hover,
 .menuItem:focus-visible {
-  background: rgb(118 185 0 / 0.14);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
   box-shadow: none;
 }
 

@@ -65,7 +65,7 @@
 }
 
 .action:hover:not(:disabled) {
-  border-color: rgb(118 185 0 / 0.55);
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
   background: var(--panel-3);
 }
 
@@ -75,12 +75,12 @@
 }
 
 .action[data-recommended] {
-  border-color: rgb(118 185 0 / 0.6);
+  border-color: color-mix(in srgb, var(--accent) 60%, transparent);
 }
 
 .action[aria-pressed="true"] {
   border-color: var(--green);
-  background: rgb(118 185 0 / 0.1);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
 }
 
 .actionIcon {

@@ -325,3 +325,7 @@ Built With Hermes also discovers public community projects and integrations on G
 ### Permanent history
 
 Bookmark a story to keep its text and source links on this computer, outside browser storage. In Editions, **Save dated edition** stores an immutable daily or weekly snapshot, including its filters, source links, demo/live label and coverage notes. Open Archive to search dated editions, export/restore a JSON backup or explicitly import older browser saves. My Hermes Daily remains separate. See [storage, migration and recovery](docs/permanent-archive.md).
+
+### Newsroom colour hierarchy
+
+Nous blue (`#0000F2`) fills primary actions with white labels. Lighter blue (`#8B9DFF`) keeps navigation, links, focus and status accents readable on dark panels; light orange (`#FFBD85`) marks editorial labels and summary bullets. Compact source-linked flashcards echo Agent Archive. Legacy green tokens now resolve to blue; written status labels preserve their meaning. Embedded host `accent` and `accentStrong` still theme interaction accents.
