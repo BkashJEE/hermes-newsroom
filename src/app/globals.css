@@ -31,10 +31,6 @@
   --accent-ink: #071525;
   --editorial: #ffbd85;
 
-  /* Legacy green names now use blue; status labels retain their meaning. */
-  --green: var(--accent);
-  --green-strong: var(--accent-strong);
-  --green-ink: #071525;
   --amber: #f2a93b;
   --cyan: #2cc6e0;
   --purple: #a07bff;
@@ -124,8 +120,8 @@ textarea {
   top: -60px;
   z-index: 100;
   padding: 8px 14px;
-  background: var(--green);
-  color: var(--green-ink);
+  background: var(--accent);
+  color: var(--accent-ink);
   font-weight: 700;
   border-radius: var(--radius-sm);
 }

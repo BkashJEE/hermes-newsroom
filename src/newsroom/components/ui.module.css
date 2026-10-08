@@ -1,7 +1,7 @@
 /* Story-type colors. Labels always carry text; color only reinforces it. */
 .typeLabel {
-  --type: var(--green);
-  --type-ink: var(--green-ink);
+  --type: var(--accent);
+  --type-ink: var(--accent-ink);
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
@@ -100,7 +100,7 @@
   color: var(--blue);
 }
 .sourceMark[data-source="hermes-community"] {
-  color: var(--green);
+  color: var(--accent);
 }
 
 .sourceName {
@@ -122,7 +122,7 @@
 }
 
 .momentum[data-direction="rising"] {
-  color: var(--green);
+  color: var(--accent);
 }
 
 .momentum[data-direction="falling"] {

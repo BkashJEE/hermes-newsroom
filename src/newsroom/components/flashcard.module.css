@@ -1,5 +1,5 @@
 .card {
-  --type: var(--green);
+  --type: var(--accent);
   position: relative;
   display: flex;
   flex-direction: column;
