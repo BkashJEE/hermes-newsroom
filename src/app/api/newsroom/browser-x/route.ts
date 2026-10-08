@@ -1,3 +1,4 @@
+import { localRequest } from "@/newsroom/config/local-request";
 import { NextRequest } from "next/server";
 import { loadNewsroomConfig } from "@/newsroom/config/load-config";
 import { readXState, updateX, xStatus } from "@/newsroom/browser-x/server";
@@ -6,11 +7,7 @@ export const runtime = "nodejs";
 function local(request: NextRequest) {
   const host = request.headers.get("host") ?? request.nextUrl.host;
   const origin = request.headers.get("origin");
-  return (
-    /^(127\.0\.0\.1|localhost):(3510|3520)$/.test(host) &&
-    (!origin || origin === `http://${host}`) &&
-    request.headers.get("x-newsroom-client") === "1"
-  );
+  return localRequest(host, origin) && request.headers.get("x-newsroom-client") === "1";
 }
 export async function GET(request: NextRequest) {
   if (!local(request)) return Response.json({ error: "Use the local Newsroom app." }, { status: 403 });
