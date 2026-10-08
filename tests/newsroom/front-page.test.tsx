@@ -10,6 +10,7 @@ import { FrontPage } from "@/newsroom/components/front-page";
 import { SignalMeter } from "@/newsroom/components/decision-rail";
 import { BreakingTicker } from "@/newsroom/components/breaking-ticker";
 import { FIXTURE_STORIES } from "@/newsroom/fixtures/stories";
+import { emptyArchive, type ArchiveData } from "@/newsroom/archive/model";
 import { currentUrl, setUrl } from "./navigation-mock";
 
 vi.mock("next/navigation", async () => (await import("./navigation-mock")).navigationMock);
@@ -19,7 +20,18 @@ const WATCHLISTS = [
   { id: "local-models", label: "Local Models", topics: ["Local Models"] },
 ];
 
-async function fakeFeed(input: RequestInfo | URL) {
+let storedArchive: ArchiveData = emptyArchive();
+async function fakeFeed(input: RequestInfo | URL, init?: RequestInit) {
+  if (String(input) === "/api/newsroom/archive") {
+    if (init?.method === "POST") {
+      const body = JSON.parse(String(init.body));
+      storedArchive.records = [
+        { story: body.story, saved: body.saved, mode: body.mode, updatedAt: new Date().toISOString() },
+      ];
+      return Response.json({ ok: true });
+    }
+    return Response.json(storedArchive);
+  }
   const scenario = parseScenario(new URL(String(input), "http://localhost").searchParams.get("scenario"));
   const now = new Date();
   const feed = await aggregateProviders(
@@ -45,6 +57,7 @@ function renderNewsroom(path = "/newsroom") {
 const lead = () => screen.findByRole("heading", { level: 2, name: "Agents are rebuilding context" });
 
 beforeEach(() => {
+  storedArchive = emptyArchive();
   window.localStorage.clear();
   window.sessionStorage.clear();
   vi.stubGlobal("fetch", vi.fn(fakeFeed));
@@ -372,7 +385,7 @@ describe("interface states", () => {
   it("offline state", async () => {
     renderNewsroom("/newsroom?scenario=offline");
     expect(await screen.findByRole("heading", { name: "You are offline" })).toBeInTheDocument();
-    expect(fetch).not.toHaveBeenCalled();
+    expect(vi.mocked(fetch).mock.calls.every(([url]) => url === "/api/newsroom/archive")).toBe(true);
   });
 
   it("request failure shows an error, not a blank page", async () => {

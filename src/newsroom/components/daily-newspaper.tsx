@@ -6,6 +6,7 @@ import { useNewsroom } from "../state/newsroom-store";
 import { newspaperExcerpt, selectNewspaper, sourceHref } from "../model/newspaper";
 import { SOURCE_LABELS, STORY_TYPE_LABELS, type Story } from "../model/story";
 import { TIME_RANGE_LABELS } from "../model/filters";
+import { SaveEdition } from "./archive-controls";
 import { Flashcard } from "./flashcard";
 import styles from "./daily-newspaper.module.css";
 
@@ -134,6 +135,26 @@ export function DailyNewspaper({ initialView = "newspaper" }: { initialView?: "c
           <strong>Daily selection · {cards.length} stories</strong>
           <p>A short edition from {filtered.length} matching signals · source links included</p>
         </div>
+        <SaveEdition
+          period="today"
+          scopeExtra={`Range: ${filters.range} · source cutoff: ${cutoff}`}
+          notices={["Selected public feed reports; sources may be incomplete."]}
+          reports={selected.map((story) => ({
+            title: story.title,
+            summary: story.summary,
+            at: story.publishedAt,
+            label: `${STORY_TYPE_LABELS[story.type]} · ${story.sourceLabel}`,
+            sources: [
+              { title: story.title, url: story.sourceUrl, summary: story.file.fullSummary },
+              ...story.file.evidence.map((e) => ({ title: e.sourceLabel, url: e.url, summary: e.claim })),
+              ...story.file.conflicting.map((e) => ({
+                title: `Conflicting: ${e.sourceLabel}`,
+                url: e.url,
+                summary: e.claim,
+              })),
+            ],
+          }))}
+        />
         <div className={styles.viewSwitch} role="group" aria-label="Daily view">
           <button type="button" aria-pressed={view === "cards"} onClick={() => setView("cards")}>
             <LayoutGrid size={16} aria-hidden /> Flashcards

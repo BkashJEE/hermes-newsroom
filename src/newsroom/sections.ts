@@ -79,8 +79,8 @@ export const NEWSROOM_SECTIONS: NewsroomSection[] = [
     label: "Archive",
     href: `${NEWSROOM_BASE}/archive`,
     icon: Archive,
-    description: "Saved and past intelligence, searchable.",
-    planned: ["Full-text search of past stories", "Saved stories", "Intelligence file history"],
+    description: "Permanent bookmarks and dated public editions, with local backup and restore.",
+    planned: ["Full-feed historical collection", "Intelligence file history"],
   },
 ];
 

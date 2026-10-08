@@ -46,6 +46,14 @@ work records with public Editions or send them as public-news evidence.
 Newsroom reports events and links sources. It does not suggest posts, queue work,
 or publish content. Use the collection record to inspect editorial exclusions.
 
+## Permanent public history
+
+Bookmarks and explicit **Save dated edition** actions write to the local permanent archive. It is independent of browser storage and deployment releases. Daily and weekly snapshots retain public source text, filter scope, demo/live labels and coverage notes. Read them at `/newsroom/archive?edition=ID`; never replace historical text with current feed results.
+
+Archive offers **Export backup**, additive **Restore backup**, and explicit **Import browser saves** for older browser-only bookmarks. Existing permanent records win during import, including unsaved records. Dismissed stories and tracking preferences remain browser-local. The public archive never reads My Hermes Daily. Storage locations, limits and recovery steps are in `docs/permanent-archive.md` in the source repository.
+
+`hermes-newsroom archive` reads permanent records and editions directly. `save` and `unsave` now use the permanent API and require no browser connection; reload an already-open Archive view after an agent changes a bookmark. Never report a successful save if the API rejects it.
+
 ## Operate the existing window
 
 - `hermes-newsroom open front|livewire|daily|personal|weekly|built|trends|archive`

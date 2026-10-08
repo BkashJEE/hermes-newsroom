@@ -73,7 +73,7 @@ sources on.
 | **My Hermes Daily**      | A personal newspaper built from your own Hermes work records.                     |
 | **Built With Hermes**    | New projects, skills and tools people are building on Hermes.                     |
 | **Trend Radar**          | Topic coverage across connected sources, with momentum where it is measured.      |
-| **Archive**              | Saved and dismissed stories, searchable.                                          |
+| **Archive**              | Permanent bookmarks and dated public editions; browser-local dismissed stories.   |
 
 Opening the app goes straight to the Newsroom front page.
 
@@ -321,3 +321,7 @@ Security reports: [SECURITY.md](SECURITY.md). Contributing:
 Editions combines the external daily and weekly desks. **Today** covers events since local midnight; **This week** covers the past seven days. The switch is inside Editions and its range is saved in the URL. Old `/newsroom/hermes-daily` and `/newsroom/weekly-chronicle` bookmarks redirect with the appropriate range selected. Today opens as a responsive grid of up to nine selected stories. Use **Newspaper** for a four-page editorial selection with short bullets, source links and a source ledger. **Print / Save PDF** uses that newspaper layout from either view; choose A4 portrait, 100% scale and disable browser headers/footers. The browser handles PDF saving locally. This is a feed-based edition, not an automatic model-generated report.
 
 Built With Hermes also discovers public community projects and integrations on GitHub, ranked by lifetime stars with visible fork counts and last-push dates. Official agent releases are listed separately. Social virality from X/Reddit/Facebook and recent star-growth rates are not yet available; see [provider coverage](docs/providers.md).
+
+### Permanent history
+
+Bookmark a story to keep its text and source links on this computer, outside browser storage. In Editions, **Save dated edition** stores an immutable daily or weekly snapshot, including its filters, source links, demo/live label and coverage notes. Open Archive to search dated editions, export/restore a JSON backup or explicitly import older browser saves. My Hermes Daily remains separate. See [storage, migration and recovery](docs/permanent-archive.md).

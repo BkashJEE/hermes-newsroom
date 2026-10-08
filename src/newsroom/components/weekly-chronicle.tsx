@@ -5,6 +5,7 @@ import type { Story } from "../model/story";
 import type { WeeklyDigest } from "../model/weekly";
 import { groupWeeklyEntries, weeklyPoints, type WeeklyEntry } from "../model/weekly-recap";
 import { sourceHref } from "../model/newspaper";
+import { SaveEdition } from "./archive-controls";
 import { useNewsroom } from "../state/newsroom-store";
 import styles from "./community-builds.module.css";
 import recap from "./weekly-chronicle.module.css";
@@ -196,6 +197,32 @@ export function WeeklyChronicleCards({ stories }: { stories: Story[] }) {
             · past seven days
           </p>
         </div>
+        <SaveEdition
+          period="week"
+          disabled={loading}
+          scopeExtra={`Weekly desk: ${desk} · all matching recaps, including collapsed rows`}
+          notices={[
+            "Public weekly sample, not every Hermes announcement. Repository activity is not a release.",
+            ...(data?.notices ?? []),
+            ...(error ? [error] : []),
+            ...(data
+              ? [
+                  `Checked ${data.fetchedAt}; release histories for ${data.checkedRepositories} of ${data.projects.length} projects.`,
+                ]
+              : []),
+          ]}
+          reports={selected.map((entry) => ({
+            title: entry.title,
+            summary: entry.summary,
+            at: entry.at,
+            label: entry.label,
+            sources: entry.sources.map((source) => ({
+              title: source.title,
+              url: source.url,
+              summary: source.summary,
+            })),
+          }))}
+        />
         <button type="button" onClick={() => window.print()}>
           Print / Save PDF
         </button>
