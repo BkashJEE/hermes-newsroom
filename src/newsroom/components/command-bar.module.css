@@ -105,14 +105,14 @@
 
 .live[data-live] {
   border-color: transparent;
-  color: var(--green);
+  color: var(--accent);
 }
 
 .liveDot {
   width: 0.55rem;
   height: 0.55rem;
   border-radius: 50%;
-  background: var(--green);
+  background: var(--accent);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
 }
 

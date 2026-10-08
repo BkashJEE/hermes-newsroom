@@ -1,7 +1,7 @@
 .desk {
   min-width: 0;
   border: 1px solid var(--line);
-  border-top: 2px solid var(--green);
+  border-top: 2px solid var(--accent);
   padding: 20px;
   background: var(--panel);
   border-radius: 5px;
@@ -23,12 +23,12 @@
 }
 .header .eyebrow {
   font: 500 12px var(--font-mono);
-  color: var(--green);
+  color: var(--accent);
   text-transform: uppercase;
 }
 .badge {
-  border: 1px solid var(--green);
-  color: var(--green);
+  border: 1px solid var(--accent);
+  color: var(--accent);
   padding: 6px 9px;
   font-size: 12px;
   white-space: nowrap;
@@ -53,7 +53,7 @@
   cursor: pointer;
 }
 .controls button:first-child {
-  background: var(--green);
+  background: var(--accent);
   color: #101500;
   font-weight: 600;
 }
@@ -92,7 +92,7 @@
   font-size: 14px;
 }
 .runline strong {
-  color: var(--green);
+  color: var(--accent);
 }
 .board {
   display: grid;
@@ -127,7 +127,7 @@
   animation: arrive 0.2s ease-out;
 }
 .card[data-status="processing"] {
-  border-left-color: var(--green);
+  border-left-color: var(--accent);
 }
 .card[data-status="classified"] {
   border-left-color: var(--cyan);
@@ -154,7 +154,7 @@
 }
 .choice {
   display: block;
-  color: var(--green);
+  color: var(--accent);
   margin: 10px 0;
 }
 .card summary,
@@ -164,7 +164,7 @@
   color: var(--text-2);
 }
 .card a {
-  color: var(--green);
+  color: var(--accent);
 }
 .override {
   margin-top: 12px;
@@ -187,7 +187,7 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--green);
+  background: var(--accent);
   animation: pulse 1s infinite alternate;
 }
 .timeline {
@@ -201,7 +201,7 @@
   line-height: 1.7;
 }
 .timeline time {
-  color: var(--green);
+  color: var(--accent);
   font: 12px var(--font-mono);
   margin-right: 8px;
 }
@@ -258,7 +258,7 @@
 }
 .metrics strong {
   display: block;
-  color: var(--green);
+  color: var(--accent);
 }
 
 .collection {
@@ -276,7 +276,7 @@
 .discovery {
   margin-block: 20px;
   padding: 16px;
-  border: 1px solid var(--green);
+  border: 1px solid var(--accent);
   background: var(--bg);
 }
 .stages,
@@ -313,7 +313,7 @@
 }
 .stages li[data-state="current"],
 .stages li[data-state="complete"] {
-  border-color: var(--green);
+  border-color: var(--accent);
   background: var(--panel-2);
 }
 .stages li[data-state="failed"],
@@ -323,7 +323,7 @@
   color: var(--amber);
 }
 .processResult {
-  border: 1px solid var(--green);
+  border: 1px solid var(--accent);
   padding: 10px 12px;
   line-height: 1.5;
 }
@@ -335,7 +335,7 @@
 .stages strong,
 .outcomes strong {
   display: block;
-  color: var(--green);
+  color: var(--accent);
   margin-top: 5px;
 }
 .sources,
@@ -364,7 +364,7 @@
   gap: 8px;
   padding: 12px;
   border: 1px solid var(--line);
-  border-left: 3px solid var(--green);
+  border-left: 3px solid var(--accent);
   background: var(--panel-2);
   overflow-wrap: anywhere;
 }
@@ -392,7 +392,7 @@
   overflow-wrap: anywhere;
 }
 .candidates li[data-selected="true"] {
-  border-left: 3px solid var(--green);
+  border-left: 3px solid var(--accent);
 }
 .candidates div {
   font-size: 12px;
@@ -433,7 +433,7 @@
   background: var(--panel-2);
 }
 .inbox a {
-  color: var(--green);
+  color: var(--accent);
   font-weight: 600;
 }
 .inbox p {
