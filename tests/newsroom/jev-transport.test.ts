@@ -16,6 +16,14 @@ describe("choosing a transport", () => {
     expect(chooseTransport({ TYPESAFE_API_KEY: "k" })).toBe("direct");
   });
 
+  it("counts a key saved through the app the same as one in the environment", () => {
+    // Someone who just typed a key into the settings screen has configured Jev,
+    // whether or not the server was started with the variable exported.
+    expect(chooseTransport({}, "saved-key")).toBe("direct");
+    expect(chooseTransport({ AI_GATEWAY_API_KEY: "g" }, "saved-key")).toBe("direct");
+    expect(chooseTransport({}, "   ")).toBeNull();
+  });
+
   it("still uses the gateway where that is all an install has", () => {
     expect(chooseTransport({ AI_GATEWAY_API_KEY: "g" })).toBe("gateway");
   });
@@ -54,9 +62,7 @@ describe("the direct request", () => {
 
   it("posts the questions to the TypeSafe endpoint with the key as a bearer token", async () => {
     const fetchMock = reply({ ok: true });
-    await postDirect({ state: { title: "t" }, questions: {} }, new AbortController().signal, {
-      TYPESAFE_API_KEY: "secret-key",
-    });
+    await postDirect({ state: { title: "t" }, questions: {} }, new AbortController().signal, "secret-key");
     const [url, init] = fetchMock.mock.calls[0] as unknown as [string, RequestInit];
     expect(url).toBe(DIRECT_ENDPOINT);
     expect((init.headers as Record<string, string>).Authorization).toBe("Bearer secret-key");
@@ -67,14 +73,14 @@ describe("the direct request", () => {
 
   it("turns a refused credential into the authentication failure, not a crash", async () => {
     reply({ error: "forbidden" }, 403);
-    await expect(
-      postDirect({}, new AbortController().signal, { TYPESAFE_API_KEY: "k" }),
-    ).rejects.toMatchObject({ failureCode: "authentication" });
+    await expect(postDirect({}, new AbortController().signal, "k")).rejects.toMatchObject({
+      failureCode: "authentication",
+    });
   });
 
   it("fails as authentication when no key is configured, without calling out", async () => {
     const fetchMock = reply({});
-    await expect(postDirect({}, new AbortController().signal, {})).rejects.toMatchObject({
+    await expect(postDirect({}, new AbortController().signal, null)).rejects.toMatchObject({
       failureCode: "authentication",
     });
     expect(fetchMock).not.toHaveBeenCalled();
@@ -87,7 +93,7 @@ describe("the direct request", () => {
         throw new Error("ECONNREFUSED 10.0.0.1:443");
       }),
     );
-    const failure = await postDirect({}, new AbortController().signal, { TYPESAFE_API_KEY: "k" }).then(
+    const failure = await postDirect({}, new AbortController().signal, "k").then(
       () => null,
       (error: unknown) => error as JevFailure,
     );
@@ -104,9 +110,7 @@ describe("the direct request", () => {
         throw new Error("aborted");
       }),
     );
-    await expect(postDirect({}, controller.signal, { TYPESAFE_API_KEY: "k" })).rejects.not.toBeInstanceOf(
-      JevFailure,
-    );
+    await expect(postDirect({}, controller.signal, "k")).rejects.not.toBeInstanceOf(JevFailure);
   });
 });
 

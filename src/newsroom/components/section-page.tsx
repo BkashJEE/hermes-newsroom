@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { JevKey } from "./jev-key";
 import { JevLiveDesk } from "./jev-live-desk";
 import { CommunityBuilds } from "./community-builds";
 import { ArchiveControls } from "./archive-controls";
@@ -74,7 +75,7 @@ function LiveWire() {
   const newest = sortStories(filtered, "newest");
   return (
     <>
-      <CollectionRecord /> <JevLiveDesk stories={newest} />{" "}
+      <CollectionRecord /> <JevLiveDesk stories={newest} /> <JevKey />{" "}
       {newest.length === 0 ? (
         <Empty>
           {sourceNotConnected(feed?.mode, filters.source, feed?.connectedSources)

@@ -15,13 +15,14 @@ import {
 } from "./model";
 import { stateDir } from "../config/state-path";
 import { chooseTransport, failureForStatus, postDirect } from "./transport";
+import { jevKey } from "./credential";
 const exec = promisify(execFile);
 const directory = stateDir("jev");
 const helper = join(homedir(), ".openclaw/workspace/hermes-jev/evaluate.mjs");
 
 /** Whether a Jev call can be attempted at all, by whichever transport is configured. */
 export async function helperReady() {
-  const transport = chooseTransport(process.env);
+  const transport = chooseTransport(process.env, await jevKey());
   if (transport === null) return false;
   // The direct transport is a fetch with a key: nothing to probe, and probing it
   // would spend a request to learn what the next request will tell us anyway.
@@ -64,8 +65,9 @@ async function reserveCall() {
 export async function evaluatePublic(story: PublicInput, signal: AbortSignal): Promise<Decision> {
   signal.throwIfAborted();
   await reserveCall();
-  if (chooseTransport(process.env) === "direct") {
-    const body = await postDirect(evaluationInput(story), signal);
+  const key = await jevKey();
+  if (chooseTransport(process.env, key) === "direct") {
+    const body = await postDirect(evaluationInput(story), signal, key);
     try {
       return parseDecision(body);
     } catch {
