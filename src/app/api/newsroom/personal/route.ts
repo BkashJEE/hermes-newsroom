@@ -1,3 +1,4 @@
+import { localRequest } from "@/newsroom/config/local-request";
 import { loadNewsroomConfig } from "@/newsroom/config/load-config";
 import { NextRequest } from "next/server";
 import { generatePersonal, personalData } from "@/newsroom/personal/server";
@@ -9,8 +10,7 @@ function allowed(request: NextRequest) {
   const host = request.headers.get("host") ?? request.nextUrl.host;
   const origin = request.headers.get("origin");
   return (
-    /^(127\.0\.0\.1|localhost):(3510|3520)$/.test(host) &&
-    (!origin || origin === `http://${host}`) &&
+    localRequest(host, origin) &&
     request.headers.get("x-newsroom-client") === "1" &&
     request.headers.get("sec-fetch-site") !== "cross-site"
   );

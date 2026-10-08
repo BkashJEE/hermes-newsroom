@@ -1,3 +1,4 @@
+import { localRequest } from "@/newsroom/config/local-request";
 import { hermesStatus, runHermes } from "@/newsroom/hermes/server";
 import { GET as getFeed } from "../route";
 import { NextRequest } from "next/server";
@@ -15,12 +16,7 @@ export async function POST(request: NextRequest) {
   const origin = request.headers.get("origin");
   // Next may normalize nextUrl to localhost; the browser sends the original Host.
   const host = request.headers.get("host") ?? request.nextUrl.host;
-  const localHost = /^(127\.0\.0\.1|localhost):(3510|3520)$/.test(host);
-  if (
-    !localHost ||
-    (origin && origin !== `http://${host}`) ||
-    request.headers.get("x-newsroom-client") !== "1"
-  ) {
+  if (!localRequest(host, origin) || request.headers.get("x-newsroom-client") !== "1") {
     return Response.json({ error: "Use the local Newsroom app or control command." }, { status: 403 });
   }
   if (busy)
