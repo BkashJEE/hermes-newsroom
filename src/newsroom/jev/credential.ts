@@ -9,9 +9,13 @@ import { DIRECT_KEY } from "./transport";
  * Where the Jev key lives, and who may see it.
  *
  * Editing `.env` means finding the clone, knowing the variable name and
- * restarting the server. A key pasted into the app is saved here instead: a
- * `0600` file in the state directory, read per request so it takes effect
- * immediately.
+ * restarting the server. A key pasted into the app is saved here instead: a file
+ * in the state directory, read per request so it takes effect immediately.
+ *
+ * It is written `0600` on Linux and macOS. Windows has no equivalent mode bit —
+ * `chmod` there only toggles the read-only flag — so the file is protected by the
+ * ACL on `%LOCALAPPDATA%`, which is user-only by default. Do not claim POSIX
+ * permissions on a platform that does not have them.
  *
  * The key is write-only from outside. Nothing returns it — not this module, not
  * the API, not the page. A caller can learn that a key exists and see its last

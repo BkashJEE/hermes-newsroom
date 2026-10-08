@@ -172,8 +172,9 @@ export function JevKey() {
       ) : null}
 
       <p className={styles.note}>
-        The key is stored on this computer only, in a file readable by your user account, and is sent to
-        TypeSafe and nowhere else. It is never shown again after saving — only its last four characters.
+        The key is stored on this computer only, in a file in your user account&rsquo;s application data, and
+        is sent to TypeSafe and nowhere else. It is never shown again after saving — only its last four
+        characters.
       </p>
     </section>
   );
