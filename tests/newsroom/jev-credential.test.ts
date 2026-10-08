@@ -45,12 +45,18 @@ describe("accepting a key", () => {
 describe("storing a key", () => {
   const KEY = "ts_abcdefghijklmnopqrstuvwxyz";
 
-  it("writes a file only this user can read", async () => {
+  it("writes the key where only this user can reach it", async () => {
     const { saveKey } = await store();
     await saveKey(KEY);
     const file = join(directory, "jev", "credential.json");
-    expect((await stat(file)).mode & 0o777).toBe(0o600);
     expect(JSON.parse(await readFile(file, "utf8")).key).toBe(KEY);
+    // POSIX mode bits are the mechanism on Linux and macOS. Windows has no
+    // equivalent — node reports 0o666 there whatever chmod was asked for — and
+    // the file's protection comes from the ACL on %LOCALAPPDATA%, which is
+    // user-only by default. Assert the mechanism that actually exists here.
+    if (process.platform !== "win32") {
+      expect((await stat(file)).mode & 0o777).toBe(0o600);
+    }
   });
 
   it("reports that a key exists and its last four, and never the key", async () => {
