@@ -32,15 +32,17 @@ export class JevFailure extends Error {
   }
 }
 
+// Transport-neutral: the same 403 can come from the direct API or the gateway,
+// and which library produced it is not what the reader needs to know.
 export const JEV_FAILURE_MESSAGES: Record<JevFailureCode, string> = {
   authentication:
-    "Jev Gateway rejected the credential (HTTP 401 or 403). Check Gateway access before another run.",
-  credits: "Jev Gateway reported insufficient credits (HTTP 402). Check the account before another run.",
-  unavailable: "Jev Gateway could not find the model or endpoint (HTTP 404). Check provider availability.",
-  "rate-limit": "Jev Gateway rate-limited this request (HTTP 429). Wait before another run.",
-  request: "Jev Gateway rejected the request (HTTP 400 or 422). Check the configured Jev adapter.",
-  provider: "The Jev provider request failed. Check Gateway request logs before another run.",
-  "invalid-result": "Jev returned an unusable response. Check Gateway request logs and response format.",
+    "Jev rejected the credential (HTTP 401 or 403). Check the configured Jev key before another run.",
+  credits: "Jev reported insufficient credits (HTTP 402). Check the account before another run.",
+  unavailable: "Jev could not find the model or endpoint (HTTP 404). Check provider availability.",
+  "rate-limit": "Jev rate-limited this request (HTTP 429). Wait before another run.",
+  request: "Jev rejected the request (HTTP 400 or 422). Check the configured Jev adapter.",
+  provider: "The Jev request failed. Check the network and provider status before another run.",
+  "invalid-result": "Jev returned an unusable response. Check the provider's response format.",
   "hourly-limit": "Newsroom's ten-attempt hourly Jev limit was reached. Wait for the limit to reset.",
 };
 export interface Decision {
@@ -105,6 +107,26 @@ export function evaluationInput(story: PublicInput) {
     },
   };
 }
+/**
+ * Both transports answer for the same model but name it differently: the AI SDK
+ * reports the gateway's slug, the API reports the exact version it ran. Accept
+ * either, and nothing else — an unrecognised model means the result is not Jev's.
+ */
+function isJevModel(model: unknown): boolean {
+  return model === "typesafe-ai/jev" || (typeof model === "string" && /^jev-[\w.-]+$/.test(model));
+}
+
+/** The SDK reports one total; the API reports input and output separately. */
+function totalTokens(
+  usage: { totalTokens?: unknown; input_tokens?: unknown; output_tokens?: unknown } | undefined,
+) {
+  if (typeof usage?.totalTokens === "number") return usage.totalTokens;
+  const input = usage?.input_tokens;
+  const output = usage?.output_tokens;
+  if (typeof input === "number" && typeof output === "number") return input + output;
+  return undefined;
+}
+
 export function parseDecision(raw: unknown): Decision {
   const value = raw as {
     model?: unknown;
@@ -112,11 +134,11 @@ export function parseDecision(raw: unknown): Decision {
       category?: { type?: unknown; choice?: unknown; probabilities?: unknown };
       relevance?: { type?: unknown; choice?: unknown; probabilities?: Record<string, unknown> };
     };
-    usage?: { totalTokens?: unknown };
+    usage?: { totalTokens?: unknown; input_tokens?: unknown; output_tokens?: unknown };
   };
   const answer = value?.answers?.category;
   if (
-    value?.model !== "typesafe-ai/jev" ||
+    !isJevModel(value?.model) ||
     answer?.type !== "choice" ||
     !CATEGORIES.includes(answer.choice as Category)
   )
@@ -142,7 +164,7 @@ export function parseDecision(raw: unknown): Decision {
     }
   }
   const category = answer.choice as Category;
-  const tokens = value.usage?.totalTokens;
+  const tokens = totalTokens(value.usage);
   const relevance = value.answers?.relevance;
   if (
     relevance &&

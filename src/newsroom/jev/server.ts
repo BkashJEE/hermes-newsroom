@@ -14,10 +14,18 @@ import {
   type RunSnapshot,
 } from "./model";
 import { stateDir } from "../config/state-path";
+import { chooseTransport, failureForStatus, postDirect } from "./transport";
 const exec = promisify(execFile);
 const directory = stateDir("jev");
 const helper = join(homedir(), ".openclaw/workspace/hermes-jev/evaluate.mjs");
+
+/** Whether a Jev call can be attempted at all, by whichever transport is configured. */
 export async function helperReady() {
+  const transport = chooseTransport(process.env);
+  if (transport === null) return false;
+  // The direct transport is a fetch with a key: nothing to probe, and probing it
+  // would spend a request to learn what the next request will tell us anyway.
+  if (transport === "direct") return true;
   try {
     const { stdout } = await exec(process.execPath, [helper, "--check"], {
       timeout: 10000,
@@ -56,6 +64,14 @@ async function reserveCall() {
 export async function evaluatePublic(story: PublicInput, signal: AbortSignal): Promise<Decision> {
   signal.throwIfAborted();
   await reserveCall();
+  if (chooseTransport(process.env) === "direct") {
+    const body = await postDirect(evaluationInput(story), signal);
+    try {
+      return parseDecision(body);
+    } catch {
+      throw new JevFailure("invalid-result");
+    }
+  }
   const temp = await mkdtemp(join(directory, "request-"));
   try {
     const file = join(temp, "input.json");
@@ -73,12 +89,7 @@ export async function evaluatePublic(story: PublicInput, signal: AbortSignal): P
       const stderr = (error as { stderr?: unknown }).stderr;
       const status =
         typeof stderr === "string" ? /Jev request failed \(HTTP (\d{3})\)/.exec(stderr)?.[1] : undefined;
-      if (status === "401" || status === "403") throw new JevFailure("authentication");
-      if (status === "402") throw new JevFailure("credits");
-      if (status === "404") throw new JevFailure("unavailable");
-      if (status === "429") throw new JevFailure("rate-limit");
-      if (status === "400" || status === "422") throw new JevFailure("request");
-      throw new JevFailure("provider");
+      throw new JevFailure(failureForStatus(status ? Number(status) : undefined));
     }
     try {
       return parseDecision(JSON.parse(stdout));
