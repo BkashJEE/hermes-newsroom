@@ -68,17 +68,36 @@ describe("autostart", () => {
   it("writes a systemd user unit on Linux", () => {
     const unit = autostartUnit({ ...base, platform: "linux" });
     expect(unit.path).toBe("/home/me/.config/systemd/user/hermes-newsroom.service");
-    expect(unit.text).toContain("ExecStart='/usr/bin/node'");
-    expect(unit.text).toContain("'--port' '3520'");
+    expect(unit.text).toContain('ExecStart="/usr/bin/node"');
+    expect(unit.text).toContain('"--port" "3520"');
     expect(unit.enable).toContainEqual([
       "systemctl",
       ["--user", "enable", "--now", "hermes-newsroom.service"],
     ]);
+    // systemd validates the file before being asked to run it.
+    expect(unit.enable[0]).toEqual(["systemd-analyze", ["--user", "verify", unit.path]]);
   });
 
-  it("quotes a path with a space, which a home directory often has", () => {
+  it("leaves WorkingDirectory bare, because systemd is not a shell", () => {
+    // systemd rejects a quoted path here as "not absolute" and refuses to start
+    // the unit. Only ExecStart words may be quoted. A space needs no escaping.
     const unit = autostartUnit({ ...base, platform: "linux", repoRoot: "/home/me/My Projects/newsroom" });
-    expect(unit.text).toContain("WorkingDirectory='/home/me/My Projects/newsroom'");
+    expect(unit.text).toContain("WorkingDirectory=/home/me/My Projects/newsroom\n");
+  });
+
+  it("doubles a percent, which systemd would otherwise read as a specifier", () => {
+    const unit = autostartUnit({ ...base, platform: "linux", repoRoot: "/home/me/100%-project" });
+    expect(unit.text).toContain("WorkingDirectory=/home/me/100%%-project");
+  });
+
+  it("quotes ExecStart words so a space cannot split an argument", () => {
+    const unit = autostartUnit({
+      ...base,
+      platform: "linux",
+      nodePath: "/opt/my node/bin/node",
+      repoRoot: "/home/me/My Projects/newsroom",
+    });
+    expect(unit.text).toContain('ExecStart="/opt/my node/bin/node" "/home/me/My Projects/newsroom/');
   });
 
   it("writes a launch agent on macOS", () => {

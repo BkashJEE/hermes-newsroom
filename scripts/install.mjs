@@ -116,8 +116,19 @@ export function pluginTarget(hermesHome, platform = process.platform) {
 
 // ----------------------------------------------------------------- autostart
 
-function quoteUnix(value) {
-  return `'${value.replace(/'/g, `'\\''`)}'`;
+/**
+ * systemd is not a shell. `WorkingDirectory=` takes a bare path and rejects a
+ * quoted one as "not absolute"; only `ExecStart=` words may be quoted, and with
+ * systemd's own rules rather than POSIX ones. `%` is a specifier prefix
+ * everywhere and has to be doubled.
+ */
+function unitPath(value) {
+  return value.replace(/%/g, "%%");
+}
+
+/** One ExecStart word: systemd-quoted, so a space or a quote cannot split it. */
+function unitArg(value) {
+  return `"${value.replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/%/g, "%%")}"`;
 }
 
 /**
@@ -175,7 +186,7 @@ ${argv}
     };
   }
   const unit = p.join(home, ".config", "systemd", "user", "hermes-newsroom.service");
-  const exec = [nodePath, next, ...args].map(quoteUnix).join(" ");
+  const exec = [nodePath, next, ...args].map(unitArg).join(" ");
   return {
     path: unit,
     text: `[Unit]
@@ -184,7 +195,7 @@ After=default.target
 
 [Service]
 Type=simple
-WorkingDirectory=${quoteUnix(repoRoot)}
+WorkingDirectory=${unitPath(repoRoot)}
 ExecStart=${exec}
 Restart=on-failure
 RestartSec=3
@@ -193,6 +204,11 @@ RestartSec=3
 WantedBy=default.target
 `,
     enable: [
+      // Ask systemd whether the file is valid before asking it to run the file.
+      // Unit tests only prove this matches what I wrote; systemd decides whether
+      // what I wrote is a unit. A quoted WorkingDirectory passed the tests and
+      // was rejected here as "not absolute".
+      ["systemd-analyze", ["--user", "verify", unit]],
       ["systemctl", ["--user", "daemon-reload"]],
       ["systemctl", ["--user", "enable", "--now", "hermes-newsroom.service"]],
     ],
@@ -245,15 +261,26 @@ function obtainPlugin({ pluginSource, dryRun }) {
   };
 }
 
-async function reachable(port) {
-  try {
-    const response = await fetch(`http://127.0.0.1:${port}/api/newsroom`, {
-      signal: AbortSignal.timeout(4000),
-    });
-    return response.ok;
-  } catch {
-    return false;
+/**
+ * Wait for the service to answer, rather than asking once and giving up.
+ *
+ * A freshly enabled unit has to start node, load Next and bind the port. Asking
+ * at four seconds reported "not answering" about a server that was starting
+ * normally, which reads as a failed install.
+ */
+async function reachable(port, attempts = 30) {
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
+    try {
+      const response = await fetch(`http://127.0.0.1:${port}/api/newsroom`, {
+        signal: AbortSignal.timeout(3000),
+      });
+      if (response.ok) return true;
+    } catch {
+      // Not up yet, or not up at all; the loop decides which.
+    }
+    if (attempt < attempts - 1) await new Promise((resolve) => setTimeout(resolve, 1000));
   }
+  return false;
 }
 
 export async function install(options) {
@@ -316,6 +343,7 @@ export async function install(options) {
     return 0;
   }
   if (options.autostart) {
+    say("Waiting for Newsroom to answer…");
     const ok = await reachable(options.port);
     say(
       ok
