@@ -1,41 +1,43 @@
 /*
- * Command Center design tokens.
- * Shell tokens: charcoal
- * pills with a #63636d hairline and a #19191c purpose-menu panel.
- * Newsroom tokens follow the Hermes Newsroom reference: graphite panels,
- * 4-6 px radii, Nous blue for actions and light orange for editorial emphasis.
+ * Design tokens, shared with Hermes X Studio.
+ *
+ * Surfaces, text, accent and the categorical signal colours are X Studio's
+ * values, so the two apps read as one product. Barlow Condensed stays for
+ * headlines: the condensed display face is what makes this page a newspaper
+ * rather than a dashboard, and X Studio has no equivalent to replace it with.
  */
 :root {
   color-scheme: dark;
 
   /* surfaces */
-  --bg: #0a0b0c;
-  --bg-raised: #101213;
-  --panel: #131517;
-  --panel-2: #181b1d;
-  --panel-3: #1f2326;
-  --line: #24282b;
-  --line-strong: #343a3e;
+  --bg: #0c0c0d;
+  --bg-raised: #101011;
+  --panel: #141416;
+  --panel-2: #19191c;
+  --panel-3: #222226;
+  --line: #2a2a2f;
+  --line-strong: #3a3a40;
 
   /* text */
-  --text: #eef0ea;
-  --text-2: #b0b5b9;
-  --text-3: #80868b;
+  --text: #ececef;
+  --text-2: #aeaeb5;
+  --text-3: #8b8b92;
 
-  /* Studio-inspired interaction palette; separate from signal status. */
-  --accent: #8b9dff;
-  --action: #0000f2;
-  --action-hover: #2929ff;
-  --action-ink: #ffffff;
-  --accent-strong: #85beff;
-  --accent-ink: #071525;
-  --editorial: #ffbd85;
+  /* One accent carries both emphasis and action, as it does in X Studio. */
+  --accent: #f28a45;
+  --accent-strong: #ffb078;
+  /* Orange is a light fill: text on it has to be dark to stay readable. */
+  --accent-ink: #1d1206;
+  --action: #f28a45;
+  --action-hover: #ffb078;
+  --action-ink: #1d1206;
+  --editorial: #ffb078;
 
-  --amber: #f2a93b;
-  --cyan: #2cc6e0;
-  --purple: #a07bff;
-  --red: #ff4f4f;
-  --blue: #5aa7ff;
+  --amber: #e58b2b;
+  --cyan: #56c99b;
+  --purple: #8a56bd;
+  --red: #ed6b6b;
+  --blue: #4f86ba;
 
   /* shell (matches the Omarchy bar) */
   --shell-bar: #111113;
@@ -53,10 +55,10 @@
   --focus: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent);
 
   /* type */
-  --font-ui: "Barlow", "Google Sans Text", system-ui, sans-serif;
+  --font-ui: "IBM Plex Sans", "Barlow", system-ui, sans-serif;
   --font-display: "Barlow Condensed", "Barlow", system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", "JetBrainsMono Nerd Font", ui-monospace, monospace;
-  --font-shell: "Google Sans Text", "Barlow", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", "JetBrains Mono", ui-monospace, monospace;
+  --font-shell: "IBM Plex Sans", "Barlow", system-ui, sans-serif;
 }
 
 * {
